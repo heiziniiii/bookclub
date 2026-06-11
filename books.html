@@ -1,0 +1,1578 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%232D5A3D'/><path d='M10 11h12v10H10z' fill='%23FAFAF8'/><path d='M16 11v10' stroke='%232D5A3D' stroke-width='1'/></svg>">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Books — 공간일기</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500&family=Noto+Serif+KR:wght@400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --max-w: 1320px;
+      --gutter: 40px;
+      --accent-green: #2D5A3D;
+      --accent-deep: #1A3525;
+      --accent-mint: #C8E0CF;
+      --accent-line: rgba(45, 90, 61, 0.12);
+      --bg-base: #FAFAF8;
+      --bg-soft: #F4F3EC;
+      --bg-elev: #FFFFFF;
+      --text-primary: #0F0F0E;
+      --text-secondary: #5A5A56;
+      --text-muted: #999993;
+      --text-on-dark: #FAFAF8;
+      --gradient-green: linear-gradient(135deg, #2D5A3D 0%, #1A3525 100%);
+      --font-serif: 'Noto Serif KR', Georgia, serif;
+      --font-sans: 'Noto Sans KR', sans-serif;
+      --font-mono: 'SF Mono', 'Menlo', Monaco, monospace;
+      --text-hero:    clamp(40px, 5.5vw, 64px);
+      --text-display: 32px;
+      --text-body:    14px;
+      --text-small:   13px;
+      --text-label:   11px;
+      --lh-tight:  1.25;
+      --lh-normal: 1.65;
+      --lh-loose:  1.85;
+      --radius-card: 16px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-sans); font-weight: 400; background: var(--bg-base); color: var(--text-primary); font-size: var(--text-body); line-height: var(--lh-normal); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+    img { display: block; }
+
+    .label-mono {
+      font-family: var(--font-sans);
+      font-size: var(--text-label);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* ── Header ── */
+    .header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(250,250,248,0.78);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--accent-line);
+    }
+    .header-inner {
+      max-width: var(--max-w); margin: 0 auto; padding: 14px var(--gutter);
+      display: flex; justify-content: space-between; align-items: center; gap: 24px;
+    }
+    .logo { display: flex; align-items: baseline; gap: 10px; text-decoration: none; }
+    .logo-ko { font-family: var(--font-sans); font-size: 17px; font-weight: 500; color: var(--text-primary); }
+    .nav { display: flex; gap: 28px; align-items: center; }
+    .nav a { font-family: var(--font-sans); font-size: var(--text-label); color: var(--text-secondary); letter-spacing: 0.06em; transition: color 0.18s; padding: 6px 0; position: relative; }
+    .nav a::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--text-primary); transform: scaleX(0); transform-origin: left; transition: transform 0.2s; }
+    .nav a:hover, .nav a.active { color: var(--text-primary); }
+    .nav a.active::after { transform: scaleX(1); }
+    .nav-mobile-toggle { display: none; width: 40px; height: 40px; border: none; background: transparent; border-radius: 8px; padding: 0; color: var(--text-primary); }
+    .nav-mobile-toggle:hover { background: var(--bg-soft); }
+    .nav-mobile-toggle svg { display: block; margin: 0 auto; }
+    @media (max-width: 720px) {
+      .hero-bg-num { display: none; }
+      .header-inner { padding: 12px 20px; }
+      .nav { display: none; }
+      .nav-mobile-toggle { display: inline-flex; align-items: center; justify-content: center; }
+      .nav.open { display: flex; position: absolute; top: 100%; left: 0; right: 0; flex-direction: column; gap: 0; background: var(--bg-elev); border-bottom: 1px solid var(--accent-line); padding: 8px 20px 16px; }
+      .nav.open a { padding: 14px 0; border-bottom: 1px solid var(--accent-line); font-size: var(--text-body); letter-spacing: 0; }
+      .nav.open a:last-child { border-bottom: none; }
+      .nav.open a::after { display: none; }
+    }
+
+    /* ── Hero ── */
+    .books-hero { background: var(--bg-base); }
+
+
+    .books-hero-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 var(--gutter); }
+
+    .hero-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 260px;
+    }
+
+    /* Left column */
+    .hero-title-col {
+      padding: 44px 48px 44px 0;
+      border-right: 1px solid var(--accent-line);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg-num {
+      position: absolute;
+      top: -8px; right: -8px;
+      font-family: var(--font-mono);
+      font-size: clamp(72px, 10vw, 140px);
+      line-height: 1;
+      color: rgba(45,90,61,0.07);
+      -webkit-text-stroke: 0;
+      pointer-events: none;
+      user-select: none;
+      z-index: 0;
+    }
+    .hero-eyebrow {
+      margin-bottom: 16px;
+      position: relative; z-index: 1;
+    }
+    .books-hero-title {
+      font-family: var(--font-serif);
+      font-size: clamp(36px, 5vw, 68px);
+      font-weight: 400;
+      letter-spacing: -0.03em;
+      line-height: var(--lh-tight);
+      color: var(--text-primary);
+      margin-bottom: 20px;
+      position: relative; z-index: 1;
+    }
+    .books-hero-title em {
+      font-style: normal;
+      color: var(--accent-green);
+    }
+    .books-hero-sub {
+      border-left: 2px solid var(--accent-mint);
+      padding-left: 14px;
+      color: var(--text-muted);
+      font-size: var(--text-small);
+      line-height: 1.7;
+      position: relative; z-index: 1;
+    }
+
+    /* Right column */
+    .hero-feature-col {
+      padding: 44px 0 44px 48px;
+      background: var(--bg-soft);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+    }
+    .hero-feature-col::after {
+      content: '';
+      position: absolute;
+      bottom: -60px; right: -60px;
+      width: 220px; height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(45,90,61,0.07) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero-feature-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      color: var(--text-muted);
+      font-size: var(--text-small);
+      opacity: 0.35;
+      text-align: center;
+    }
+
+    /* Current book panel */
+    .hero-current-book { display: none; width: 100%; }
+    .hero-current-book.visible { display: block; }
+
+    .hero-cb-month-label {
+      font-family: var(--font-sans);
+      font-size: var(--text-label);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .hero-cb-month-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(45,90,61,0.2);
+    }
+    .hero-cb-content { display: flex; align-items: flex-start; gap: 16px; }
+    .hero-cb-cover {
+      width: 90px; height: 124px;
+      object-fit: contain;
+      background: #fff;
+      border-radius: 4px;
+      box-shadow: 4px 4px 0 rgba(45,90,61,0.12), 0 8px 24px rgba(0,0,0,0.12);
+      flex-shrink: 0;
+    }
+    .hero-cb-info { padding-top: 4px; }
+    .hero-cb-title {
+      font-family: var(--font-serif);
+      font-size: clamp(18px, 2.2vw, 24px);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.3;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+    .hero-cb-author { font-size: var(--text-small); color: var(--text-muted); margin-bottom: 14px; }
+    .hero-cb-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--accent-green);
+      color: var(--text-on-dark);
+      font-family: var(--font-sans);
+      font-size: var(--text-label);
+      letter-spacing: 0.06em;
+      padding: 4px 10px;
+      border-radius: 2px;
+    }
+    .hero-cb-badge-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--accent-mint);
+      animation: cbDotPulse 1.8s ease-out infinite;
+    }
+    @keyframes cbDotPulse {
+      0%   { box-shadow: 0 0 0 0 rgba(200,224,207,0.7); }
+      100% { box-shadow: 0 0 0 8px rgba(200,224,207,0); }
+    }
+
+    /* Tab bar */
+    .tab-bar { display: flex; border-top: 1px solid var(--accent-line); }
+    .tab-btn {
+      display: flex; align-items: center; gap: 7px;
+      padding: 14px 20px;
+      font-family: var(--font-sans);
+      font-size: 11px; letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      background: none; border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      transition: color 0.18s;
+      margin-bottom: -1px;
+    }
+    .tab-btn:hover { color: var(--text-secondary); }
+    .tab-btn.active { color: var(--accent-green); border-bottom-color: var(--accent-green); }
+    .tab-count {
+      font-family: var(--font-sans); font-size: var(--text-label);
+      letter-spacing: 0.04em;
+      padding: 1px 6px; border-radius: 2px;
+      background: var(--bg-soft); color: var(--text-muted);
+    }
+    .tab-btn.active .tab-count { background: var(--accent-green); color: var(--text-on-dark); }
+
+    /* ── Main area ── */
+    .books-main { max-width: var(--max-w); margin: 0 auto; padding: 48px var(--gutter) 100px; }
+
+    /* ── Tab panels ── */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── Add panel ── */
+    .add-panel {
+      background: var(--bg-elev); border: 1px solid var(--accent-line);
+      border-radius: var(--radius-card); padding: 24px 28px; margin-bottom: 36px;
+    }
+    .add-panel .label-mono { display: block; margin-bottom: 14px; }
+    .search-row { display: flex; gap: 8px; align-items: stretch; }
+    .search-input {
+      flex: 1; height: 44px; padding: 0 16px;
+      border: 1px solid var(--accent-line); border-radius: 10px;
+      font-family: var(--font-sans); font-size: 14px; color: var(--text-primary);
+      background: var(--bg-base); outline: none; transition: border-color 0.2s;
+    }
+    .search-input:focus { border-color: rgba(45,90,61,0.4); }
+    .search-input::placeholder { color: var(--text-muted); }
+    .search-btn {
+      height: 44px; padding: 0 20px;
+      background: var(--accent-green); color: var(--text-on-dark);
+      border-radius: 10px; font-size: 13px; font-weight: 500;
+      transition: background 0.2s; white-space: nowrap;
+    }
+    .search-btn:hover { background: var(--accent-deep); }
+    .search-results-wrap { margin-top: 12px; }
+    .search-result-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 12px; border-radius: 10px; cursor: pointer; transition: background 0.18s;
+    }
+    .search-result-item:hover { background: var(--bg-soft); }
+    .sr-cover { width: 36px; height: 50px; object-fit: cover; border-radius: 4px; flex-shrink: 0; background: var(--bg-soft); }
+    .sr-info { min-width: 0; }
+    .sr-title { font-size: var(--text-small); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .sr-author { font-size: var(--text-label); color: var(--text-muted); margin-top: 2px; }
+    .search-loading, .search-empty { font-size: var(--text-small); color: var(--text-muted); padding: 12px 4px; }
+    .selected-book {
+      display: none; align-items: center; gap: 14px;
+      margin-top: 14px; padding: 12px 14px;
+      background: rgba(45,90,61,0.05); border: 1px solid rgba(45,90,61,0.15); border-radius: 10px;
+    }
+    .selected-book.show { display: flex; }
+    .selected-cover { width: 40px; height: 56px; object-fit: cover; border-radius: 4px; flex-shrink: 0; background: var(--bg-soft); }
+    .selected-info { flex: 1; min-width: 0; }
+    .selected-title { font-size: var(--text-small); font-weight: 500; }
+    .selected-author { font-size: var(--text-label); color: var(--text-secondary); margin-top: 2px; }
+    .selected-clear { width: 28px; height: 28px; border-radius: 50%; font-size: 16px; color: var(--text-muted); display: flex; align-items: center; justify-content: center; transition: background 0.18s; }
+    .selected-clear:hover { background: var(--bg-soft); color: var(--text-primary); }
+    .add-row { display: none; align-items: center; gap: 10px; margin-top: 12px; }
+    .add-row.show { display: flex; }
+    .recommender-select {
+      flex: 1; height: 40px; padding: 0 12px;
+      border: 1px solid var(--accent-line); border-radius: 8px;
+      font-family: var(--font-sans); font-size: var(--text-small); color: var(--text-primary);
+      background: var(--bg-base); outline: none;
+    }
+    .add-confirm-btn {
+      height: 40px; padding: 0 20px;
+      background: var(--accent-green); color: var(--text-on-dark);
+      border-radius: 8px; font-size: var(--text-small); font-weight: 500;
+      transition: background 0.2s; white-space: nowrap;
+    }
+    .add-confirm-btn:hover { background: var(--accent-deep); }
+    .add-confirm-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    /* ── Books grid (editorial hairline) ── */
+    .books-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      border-top: 1px solid var(--accent-line);
+      border-left: 1px solid var(--accent-line);
+      gap: 0;
+      border-radius: var(--radius-card);
+      overflow: hidden;
+    }
+
+    /* ── Book card ── */
+    .book-card {
+      border-right: 1px solid var(--accent-line);
+      border-bottom: 1px solid var(--accent-line);
+      padding: 20px 18px 18px;
+      background: var(--bg-base);
+      position: relative;
+      transition: background 0.2s;
+      cursor: pointer;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .book-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 2px;
+      background: var(--accent-green);
+      transform: scaleY(0);
+      transform-origin: bottom;
+      transition: transform 0.22s ease;
+    }
+    .book-card:hover { background: var(--bg-elev); }
+    .book-card:hover::before { transform: scaleY(1); }
+    .book-card-num {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      display: block;
+      margin-bottom: 10px;
+    }
+    .book-card-cover-wrap {
+      aspect-ratio: 3/4;
+      overflow: hidden;
+      background: var(--bg-soft);
+      position: relative;
+      box-shadow: 3px 3px 0 rgba(0,0,0,0.06);
+      border-radius: 0;
+      margin-bottom: 12px;
+    }
+    .book-card-cover-img {
+      width: 100%; height: 100%;
+      object-fit: contain;
+      background: #fff;
+    }
+    .book-card-cover-placeholder {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px; opacity: 0.25;
+    }
+    .book-card-title {
+      font-size: 13px; font-weight: 500;
+      margin-bottom: 4px;
+      line-height: var(--lh-tight);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .book-card-author { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; }
+    .book-card-footer {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-top: 10px; border-top: 1px solid var(--accent-line);
+      margin-top: auto;
+    }
+    .book-card-avg { font-family: var(--font-sans); font-size: var(--text-label); color: var(--accent-green); }
+    .book-card-avg.empty { color: var(--text-muted); }
+    .book-card-delete {
+      width: 24px; height: 24px; border-radius: 50%;
+      font-size: 14px; color: var(--text-muted);
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.18s, color 0.18s;
+    }
+    .book-card-delete:hover { background: rgba(201,75,75,0.08); color: #C94B4B; }
+    .rating-popup-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(15,15,14,.55);
+      backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 16px;
+    }
+    .rating-popup {
+      background: #fff; border-radius: 20px;
+      padding: 28px 24px 24px;
+      width: min(380px, 100%);
+      position: relative;
+      box-shadow: 0 24px 64px rgba(0,0,0,.18);
+    }
+    .rating-popup-close {
+      position: absolute; top: 16px; right: 16px;
+      width: 32px; height: 32px; border-radius: 50%;
+      font-size: 18px; color: #999; background: none; border: none; cursor: pointer;
+    }
+    .rating-popup-header {
+      display: flex; gap: 14px; align-items: flex-start; margin-bottom: 20px;
+    }
+    .rating-popup-cover {
+      width: 52px; height: 72px; object-fit: contain; border-radius: 2px;
+      flex-shrink: 0; background: #f5f5f0;
+    }
+    .rating-popup-title {
+      font-size: 15px; font-weight: 500; line-height: 1.3; margin-bottom: 4px;
+      font-family: var(--font-serif);
+    }
+    .rating-popup-author { font-size: 12px; color: var(--text-muted); }
+    .rating-popup-avg { font-size: 13px; color: var(--accent-green); font-weight: 500; margin-top: 6px; }
+    .rating-popup-avg.empty { color: var(--text-muted); }
+    .rating-popup-rows { border-top: 1px solid var(--accent-line); padding-top: 16px; }
+    .rating-row {
+      display: flex; align-items: center; justify-content: space-between; padding: 5px 0;
+    }
+    .rating-name { font-size: var(--text-small); color: var(--text-secondary); font-weight: 500; width: 40px; }
+    .rating-stars { display: flex; gap: 3px; }
+    .star-btn { font-size: 16px; line-height: 1; color: var(--accent-line); transition: color 0.15s, transform 0.15s; padding: 2px; }
+    .star-btn.filled { color: #E5A920; }
+    .star-btn:hover { transform: scale(1.25); }
+    .books-empty {
+      grid-column: 1 / -1;
+      text-align: center; padding: 60px 20px;
+      font-family: var(--font-serif); font-size: var(--text-body); color: var(--text-muted);
+      border-right: 1px solid var(--accent-line);
+      border-bottom: 1px solid var(--accent-line);
+    }
+
+    /* ── Wishlist (editorial grid) ── */
+    .wl-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      border-top: 1px solid var(--accent-line);
+      border-left: 1px solid var(--accent-line);
+      gap: 0;
+      border-radius: var(--radius-card);
+      overflow: hidden;
+    }
+    .wl-card {
+      border-right: 1px solid var(--accent-line);
+      border-bottom: 1px solid var(--accent-line);
+      padding: 20px 18px 18px;
+      background: var(--bg-base);
+      position: relative;
+      transition: background 0.18s;
+    }
+    .wl-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; bottom: 0;
+      width: 2px;
+      background: var(--accent-green);
+      transform: scaleY(0);
+      transform-origin: bottom;
+      transition: transform 0.22s ease;
+    }
+    .wl-card:hover { background: var(--bg-elev); }
+    .wl-card:hover::before { transform: scaleY(1); }
+    .wl-card-num { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); display: block; margin-bottom: 10px; }
+    .wl-cover-container { position: relative; margin-bottom: 12px; }
+    .wl-card-cover-wrap {
+      aspect-ratio: 3/4;
+      overflow: hidden;
+      background: var(--bg-soft);
+      position: relative;
+      box-shadow: 2px 2px 0 var(--accent-line);
+      border-radius: 0;
+    }
+    .wl-card-cover-img { width: 100%; height: 100%; object-fit: contain; background: #fff; }
+    .wl-card-cover-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 32px; opacity: 0.25; }
+    .wl-card-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; line-height: var(--lh-tight); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .wl-card-author { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; }
+    .wl-card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--accent-line); padding-top: 8px; margin-top: 8px; gap: 4px; }
+    .wl-recommender-tag { font-size: 10px; color: var(--accent-green); background: rgba(45,90,61,0.08); padding: 2px 7px; border-radius: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; min-width: 0; }
+    .wl-footer-actions { display: flex; gap: 4px; flex-shrink: 0; align-items: center; }
+    .wl-card.admin-mode { cursor: pointer; }
+    .wl-del-btn { width: 22px; height: 22px; border-radius: 50%; font-size: 14px; color: var(--text-muted); display: flex; align-items: center; justify-content: center; transition: background 0.18s, color 0.18s; }
+    .wl-del-btn:hover { background: rgba(201,75,75,0.08); color: #C94B4B; }
+    .wl-empty { grid-column: 1 / -1; text-align: center; padding: 60px 20px; font-family: var(--font-serif); font-size: var(--text-body); color: var(--text-muted); line-height: var(--lh-loose); border-right: 1px solid var(--accent-line); border-bottom: 1px solid var(--accent-line); }
+
+    /* ── Bestseller ── */
+    .bestseller-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 24px; }
+    .bestseller-meta { font-size: var(--text-label); color: var(--text-muted); }
+    .refresh-btn { display: flex; align-items: center; gap: 6px; padding: 8px 16px; border: 1px solid var(--accent-line); border-radius: 999px; font-size: var(--text-label); color: var(--text-secondary); background: var(--bg-elev); transition: background 0.18s, border-color 0.18s; }
+    .refresh-btn:hover { background: var(--bg-soft); border-color: rgba(45,90,61,0.25); }
+    .refresh-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .bs-top3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border: 1px solid var(--accent-line);
+      border-radius: var(--radius-card) var(--radius-card) 0 0;
+      overflow: hidden;
+    }
+    .bs-top3-cell {
+      padding: 20px 16px;
+      border-right: 1px solid var(--accent-line);
+      display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px;
+    }
+    .bs-top3-cell:last-child { border-right: none; }
+    .bs-top3-cell.rank-1 { background: var(--bg-soft); }
+    .bs-top3-cover { object-fit: contain; background: #fff; border-radius: 2px; }
+    .bs-top3-cell.rank-1 .bs-top3-cover { width: 64px; height: 90px; box-shadow: 4px 4px 0 rgba(45,90,61,0.15); }
+    .bs-top3-cell:not(.rank-1) .bs-top3-cover { width: 52px; height: 72px; box-shadow: 2px 2px 0 var(--accent-line); }
+    .bs-top3-rank { font-size: 11px; font-weight: 500; letter-spacing: 0.06em; }
+    .bs-top3-cell.rank-1 .bs-top3-rank { color: var(--accent-green); }
+    .bs-top3-cell:not(.rank-1) .bs-top3-rank { color: var(--text-muted); font-weight: 400; }
+    .bs-top3-title { font-size: 12px; font-weight: 500; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .bs-top3-author { font-size: 11px; color: var(--text-muted); }
+    .bs-top3-cell .bs-add-btn { margin-top: auto; }
+    .bs-rest-list {
+      border: 1px solid var(--accent-line);
+      border-top: none;
+      border-radius: 0 0 var(--radius-card) var(--radius-card);
+      overflow: hidden;
+    }
+    .bs-rest-row { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-bottom: 1px solid var(--accent-line); }
+    .bs-rest-row:last-child { border-bottom: none; }
+    .bs-rest-row:hover { background: var(--bg-soft); }
+    .bs-rest-rank { font-family: var(--font-mono); font-size: 11px; width: 20px; color: var(--text-muted); flex-shrink: 0; }
+    .bs-rest-cover { width: 34px; height: 46px; object-fit: contain; background: #fff; border-radius: 1px; flex-shrink: 0; }
+    .bs-rest-info { flex: 1; min-width: 0; }
+    .bs-rest-title { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; color: var(--text-primary); margin-bottom: 2px; }
+    .bs-rest-title:hover { color: var(--accent-green); }
+    .bs-rest-author { font-size: 11px; color: var(--text-muted); }
+    .bs-add-btn { font-size: var(--text-label); font-weight: 500; padding: 4px 10px; border-radius: 6px; background: rgba(45,90,61,0.07); color: var(--accent-green); transition: background 0.18s; white-space: nowrap; flex-shrink: 0; }
+    .bs-add-btn:hover { background: rgba(45,90,61,0.15); }
+    .bs-add-btn.added { background: rgba(45,90,61,0.15); color: var(--accent-deep); cursor: default; }
+    body:not(.is-logged-in) .bs-add-btn { display: none; }
+    .bestseller-loading, .bestseller-error { text-align: center; padding: 60px 20px; font-size: var(--text-body); color: var(--text-muted); line-height: var(--lh-loose); }
+
+    /* ── Add toggle button ── */
+    .add-toggle-btn {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      width: 100%; padding: 11px 20px; margin-bottom: 16px;
+      border: 1px dashed rgba(45,90,61,0.3); border-radius: 10px;
+      font-size: var(--text-small); font-weight: 500; color: var(--accent-green);
+      background: rgba(45,90,61,0.03); transition: background 0.18s, border-color 0.18s;
+    }
+    .add-toggle-btn:hover { background: rgba(45,90,61,0.07); border-color: rgba(45,90,61,0.5); }
+
+    /* ── Toast ── */
+    .status-toast {
+      position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+      background: var(--text-primary); color: var(--text-on-dark);
+      font-family: var(--font-sans); font-size: var(--text-label); letter-spacing: 0.06em;
+      padding: 10px 20px; border-radius: 999px;
+      opacity: 0; pointer-events: none; transition: opacity 0.25s; z-index: 999;
+    }
+    .status-toast.show { opacity: 1; }
+
+    /* ── Footer ── */
+    .footer { border-top: 1px solid var(--accent-line); padding: 28px 0; background: var(--bg-base); }
+    .footer-content { max-width: var(--max-w); margin: 0 auto; padding: 0 var(--gutter); display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: var(--text-label); color: var(--text-muted); flex-wrap: wrap; }
+    .footer-left { display: flex; align-items: center; gap: 8px; }
+    .footer-left strong { font-weight: 500; color: var(--text-secondary); }
+    .footer-right { display: flex; gap: 16px; align-items: center; }
+    .footer-right a { color: var(--text-muted); transition: color 0.2s; }
+    .footer-right a:hover { color: var(--text-primary); }
+    .footer-sep { opacity: 0.4; }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .books-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+      .wl-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+      .bs-rest-row { padding: 12px 12px; }
+    }
+    @media (max-width: 720px) {
+      :root { --gutter: 20px; }
+      .hero-layout { grid-template-columns: 1fr; }
+      .hero-title-col { border-right: none; border-bottom: 1px solid var(--accent-line); padding: 55px 0; text-align: center; }
+      .books-hero-sub { border-left: none; padding-left: 0; }
+      .hero-feature-col { padding: 32px var(--gutter); justify-content: center; min-height: 160px; }
+      .hero-feature-col::after { display: none; }
+      .tab-btn { font-size: 10px; padding: 12px 14px; gap: 5px; }
+      .wl-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+      .bs-top3-cell.rank-1 .bs-top3-cover { width: 58px; height: 81px; }
+      .bs-top3-cell:not(.rank-1) .bs-top3-cover { width: 47px; height: 65px; }
+      .footer { padding: 20px 0; }
+    }
+    @media (max-width: 500px) {
+      .books-grid { grid-template-columns: repeat(3, 1fr); }
+      .wl-grid { grid-template-columns: repeat(3, 1fr); }
+      .bs-top3-title { -webkit-line-clamp: 1; }
+    }
+    @media (max-width: 380px) {
+      .books-grid { grid-template-columns: repeat(2, 1fr); }
+      .wl-grid { grid-template-columns: repeat(2, 1fr); }
+      .bs-top3 { grid-template-columns: 1fr; }
+      .bs-top3-cell { border-right: none; border-bottom: 1px solid var(--accent-line); }
+      .bs-top3-cell:last-child { border-bottom: none; }
+      .bs-top3-cell.rank-1 { order: -1; }
+    }
+    @media (max-width: 600px) {
+      .rating-row { flex-direction: column; align-items: flex-start; gap: 3px; padding: 4px 0; }
+      .rating-name { width: auto; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a class='logo' href='index.html'>
+      <span class="logo-ko">공간일기</span>
+    </a>
+    <div style="display:flex;align-items:center;gap:20px;">
+      <nav class="nav" id="primary-nav">
+        <a href='index.html'>HOME</a>
+        <a href='about.html'>ABOUT</a>
+        <a class='active' href='books.html'>BOOKS</a>
+        <a href='schedule.html'>SCHEDULE</a>
+        <a href='admin.html' id='nav-admin' style='display:none'>ADMIN</a>
+      </nav>
+      <div id="auth-badge" style="display:flex;align-items:center;flex-shrink:1;min-width:0;overflow:hidden;"></div>
+      <button class="nav-mobile-toggle" aria-label="메뉴 열기" aria-expanded="false" onclick="toggleNav(this)">
+        <svg width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <line x1="1" y1="1" x2="19" y2="1"/><line x1="1" y1="7" x2="19" y2="7"/><line x1="1" y1="13" x2="19" y2="13"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ── Hero ── -->
+<section class="books-hero">
+
+  <div class="books-hero-inner">
+    <div class="hero-layout">
+
+      <!-- Left: Title column -->
+      <div class="hero-title-col">
+        <span class="hero-bg-num" id="hero-bg-num" aria-hidden="true">0</span>
+        <p class="label-mono hero-eyebrow">BOOKS · 책목록</p>
+        <h1 class="books-hero-title">
+          우리가<br>읽은 <em>책</em>
+        </h1>
+        <p class="books-hero-sub">
+          함께 읽고, 이야기 나누고, 기록합니다
+        </p>
+      </div>
+
+      <!-- Right: Feature column (이달의 책) -->
+      <div class="hero-feature-col">
+        <div class="hero-feature-placeholder" id="hero-feature-placeholder">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true">
+            <path d="M4 19.5A2.5 2.5 0 016.5 17H20"/>
+            <path d="M4 4.5A2.5 2.5 0 016.5 2H20v20H6.5A2.5 2.5 0 014 19.5z"/>
+          </svg>
+          <span>이달의 책 준비 중</span>
+        </div>
+
+        <!-- id="current-book-banner" preserved for JS compatibility -->
+        <div class="hero-current-book" id="current-book-banner">
+          <div class="hero-cb-month-label">이달의 책 · THIS MONTH</div>
+          <div class="hero-cb-content">
+            <img class="hero-cb-cover" id="cb-cover" alt="">
+            <div class="hero-cb-info">
+              <div class="hero-cb-title" id="cb-title"></div>
+              <div class="hero-cb-author" id="cb-author"></div>
+              <div class="hero-cb-badge">
+                <span class="hero-cb-badge-dot"></span>
+                NOW READING
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /.hero-layout -->
+
+    <!-- Tab bar -->
+    <div class="tab-bar">
+      <button class="tab-btn active" data-tab="read">
+        읽은 책
+        <span class="tab-count" id="count-read">0</span>
+      </button>
+      <button class="tab-btn" data-tab="wishlist">
+        읽고싶은
+        <span class="tab-count" id="count-wishlist">0</span>
+      </button>
+      <button class="tab-btn" data-tab="bestseller">
+        베스트셀러
+      </button>
+    </div>
+  </div>
+
+</section>
+
+<main class="books-main">
+
+  <!-- ── Tab: 읽은 책 ── -->
+  <div class="tab-panel active" id="panel-read">
+    <button class="add-toggle-btn" id="toggle-book-add" data-auth="member" style="display:none">＋ 읽은 책 추가</button>
+    <div class="add-panel" id="panel-book-add" style="display:none">
+      <span class="label-mono">읽은 책 추가</span>
+      <div class="search-row">
+        <input type="text" class="search-input" id="book-search" placeholder="책 제목 검색...">
+        <button class="search-btn" id="book-search-btn">검색</button>
+      </div>
+      <div class="search-results-wrap" id="book-results"></div>
+      <div class="selected-book" id="book-selected">
+        <img class="selected-cover" id="book-sel-cover" alt="">
+        <div class="selected-info">
+          <div class="selected-title" id="book-sel-title"></div>
+          <div class="selected-author" id="book-sel-author"></div>
+        </div>
+        <button class="selected-clear" id="book-sel-clear" aria-label="선택 취소">×</button>
+      </div>
+      <div class="add-row" id="book-add-row">
+        <button class="add-confirm-btn" id="book-add-btn">목록에 추가</button>
+      </div>
+    </div>
+    <div class="books-grid" id="books-grid">
+      <p class="books-empty">불러오는 중...</p>
+    </div>
+  </div>
+
+  <!-- ── Tab: 읽고싶은 ── -->
+  <div class="tab-panel" id="panel-wishlist">
+    <button class="add-toggle-btn" id="toggle-wl-add" data-auth="member" style="display:none">＋ 읽고싶은 책 추가</button>
+    <div class="add-panel" id="panel-wl-add" style="display:none">
+      <span class="label-mono">읽고싶은 책 추가</span>
+      <div class="search-row">
+        <input type="text" class="search-input" id="wl-search" placeholder="책 제목 검색...">
+        <button class="search-btn" id="wl-search-btn">검색</button>
+      </div>
+      <div class="search-results-wrap" id="wl-results"></div>
+      <div class="selected-book" id="wl-selected">
+        <img class="selected-cover" id="wl-sel-cover" alt="">
+        <div class="selected-info">
+          <div class="selected-title" id="wl-sel-title"></div>
+          <div class="selected-author" id="wl-sel-author"></div>
+        </div>
+        <button class="selected-clear" id="wl-sel-clear" aria-label="선택 취소">×</button>
+      </div>
+      <div class="add-row" id="wl-add-row">
+        <select class="recommender-select" id="wl-recommender">
+          <option value="">추천인 선택</option>
+          <option>진협</option><option>수화</option>
+          <option>애리</option><option>유영</option><option>혜진</option>
+        </select>
+        <button class="add-confirm-btn" id="wl-add-btn" disabled>목록에 추가</button>
+      </div>
+    </div>
+    <div class="wl-grid" id="wl-grid">
+      <p class="wl-empty">불러오는 중...</p>
+    </div>
+  </div>
+
+  <!-- ── Tab: 베스트셀러 ── -->
+  <div class="tab-panel" id="panel-bestseller">
+    <div class="bestseller-header">
+      <span class="bestseller-meta" id="bs-meta">알라딘 주간 베스트셀러</span>
+      <button class="refresh-btn" id="bs-refresh">↺ &nbsp;새로고침</button>
+    </div>
+    <div class="bestseller-grid" id="bs-grid">
+      <p class="bestseller-loading">탭을 선택하면 불러옵니다</p>
+    </div>
+  </div>
+
+</main>
+
+<div class="status-toast" id="toast"></div>
+
+<footer class="footer">
+  <div class="footer-content">
+    <div class="footer-left">
+      <strong>공간일기</strong>
+      <span class="label-mono">· EST. 2025</span>
+    </div>
+    <div class="footer-right">
+      <a href="#">Instagram</a>
+      <span class="footer-sep">·</span>
+      <a href="mailto:hello@gonggan.kr">Email</a>
+    </div>
+  </div>
+</footer>
+
+<script type="module">
+import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+import { getDatabase, ref, onValue, set, get } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCjtgMykJPKnsAORcfgQ9FxbPnzNEj_fEc",
+  authDomain: "book-56493.firebaseapp.com",
+  databaseURL: "https://book-56493-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "book-56493",
+  storageBucket: "book-56493.firebasestorage.app",
+  messagingSenderId: "900836361804",
+  appId: "1:900836361804:web:17d21b68011427a7e796e9"
+};
+
+const MEMBERS = ["진협", "수화", "애리", "유영", "혜진"];
+const KAKAO_KEY = "3ff3cf693eef1fa2782df5b4dcd1dd70";
+const ALADIN_KEY = "ttbrnlduadosel1429001";
+const BS_CACHE_KEY = "aladin-bestseller-cache";
+const BS_CACHE_TTL = 60 * 60 * 1000;
+
+const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+const db  = getDatabase(app);
+const booksRef       = ref(db, "book-club/books");
+const wishlistRef    = ref(db, "book-club/wishlist");
+const currentBookRef = ref(db, "book-club/current-book");
+const pinsRef        = ref(db, "book-club/pins");
+
+// ── 이미지 URL 정규화 ──
+function toHiRes(url) {
+  if (!url) return url;
+  // 카카오 CDN 프록시: fname 파라미터에서 실제 URL 추출
+  const fnameMatch = url.match(/[?&]fname=([^&]+)/);
+  if (fnameMatch) return decodeURIComponent(fnameMatch[1]);
+  // kakaocdn.net URL에서 fname이 없으면(손상된 URL) 그대로 반환
+  if (url.includes("kakaocdn.net")) return url;
+  // 기타 리사이즈 경로 제거
+  return url.replace(/\/R\d+x\d+[^/]*\//, "/");
+}
+
+// ── 이미지 로드 실패 시 Kakao 재검색으로 자동 복구 ──
+const _repairing = new Set();
+async function repairImage(id, title, collection, saveFn) {
+  if (_repairing.has(id) || !title || !collection[id]) return;
+  _repairing.add(id);
+  try {
+    const results = await searchKakao(title);
+    if (results.length && results[0].image && collection[id]) {
+      collection[id].image = results[0].image;
+      await saveFn();
+    }
+  } catch {}
+  _repairing.delete(id);
+}
+
+// ── 인라인 Auth ──
+const SK = "gonggan-session";
+const ADMIN_MBR = "혜진";
+const DEF_PINS  = {"진협":"1234","수화":"2345","애리":"3456","유영":"4567","혜진":"0000"};
+
+function getSession(){ try{const r=sessionStorage.getItem(SK);return r?JSON.parse(r):null;}catch{return null;} }
+function isAdmin(){ const s=getSession();return !!(s&&s.role==="admin"); }
+function isMember(n){ const s=getSession();return !!(s&&s.member===n); }
+function isLoggedIn(){ return getSession()!==null; }
+
+async function loginUser(pin){
+  let pins=DEF_PINS;
+  try{const snap=await get(pinsRef);if(snap.exists())pins=snap.val();}catch{}
+  const member=MEMBERS.find(m=>String(pins[m])===String(pin));
+  if(!member)return false;
+  sessionStorage.setItem(SK,JSON.stringify({member,role:member===ADMIN_MBR?"admin":"member"}));
+  return true;
+}
+
+let _modal=null;
+function showLoginModal(cb){
+  if(_modal)return;
+  const o=document.createElement("div");
+  o.style.cssText="position:fixed;inset:0;z-index:9999;background:rgba(15,15,14,.55);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;";
+  o.innerHTML=`<div style="background:#fff;border-radius:20px;padding:40px 36px;width:min(420px,calc(100vw - 32px));position:relative;box-shadow:0 24px 64px rgba(0,0,0,.18)">
+    <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:24px"><span style="font-family:'Noto Serif KR',Georgia,serif;font-size:18px;font-weight:500">공간일기</span><span style="font-family:'Noto Sans KR',sans-serif;font-size:11px;letter-spacing:.06em;color:#999">GONGGAN DIARY</span></div>
+    <h2 style="font-size:22px;font-weight:400;letter-spacing:-.02em;margin-bottom:24px;font-family:'Noto Serif KR',Georgia,serif">로그인</h2>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px"><span style="font-family:'Noto Sans KR',sans-serif;font-size:11px;letter-spacing:.06em;color:#999;text-transform:uppercase;white-space:nowrap">PIN</span><input id="_ml_pin" type="password" inputmode="numeric" maxlength="4" placeholder="••••" style="flex:1;min-width:0;box-sizing:border-box;-webkit-appearance:none;height:46px;border:1px solid rgba(45,90,61,.2);border-radius:10px;padding:0 16px;font-size:20px;letter-spacing:.3em;font-family:'Noto Sans KR',sans-serif;outline:none;background:#FAFAF8"></div>
+    <p id="_ml_err" style="min-height:18px;font-size:12px;color:#C94B4B;margin-bottom:16px"></p>
+    <button id="_ml_ok" style="width:100%;height:48px;background:#2D5A3D;color:#FAFAF8;border-radius:12px;font-size:15px;font-weight:500;border:none;cursor:pointer;font-family:inherit">로그인</button>
+    <button id="_ml_x" style="position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;font-size:18px;color:#999;background:none;border:none;cursor:pointer">×</button>
+  </div>`;
+  document.body.appendChild(o);_modal=o;
+  async function doLogin(){
+    const pin=document.getElementById("_ml_pin").value.trim();
+    const err=document.getElementById("_ml_err");
+    if(!pin){err.textContent="PIN을 입력해주세요";return;}
+    const sb=document.getElementById("_ml_ok");
+    sb.textContent="확인 중...";sb.disabled=true;
+    if(await loginUser(pin)){closeMod();if(cb)cb(getSession());else location.reload();}
+    else{err.textContent="PIN이 올바르지 않아요";document.getElementById("_ml_pin").value="";sb.textContent="로그인";sb.disabled=false;}
+  }
+  document.getElementById("_ml_ok").addEventListener("click",doLogin);
+  document.getElementById("_ml_pin").addEventListener("keydown",e=>{if(e.key==="Enter")doLogin();});
+  document.getElementById("_ml_x").addEventListener("click",closeMod);
+  o.addEventListener("click",e=>{if(e.target===o)closeMod();});
+}
+function closeMod(){if(_modal){_modal.remove();_modal=null;}}
+
+function refreshAuthUI(){
+  const s=getSession(),b=document.getElementById("auth-badge");
+  if(!b)return;
+  if(s){
+    b.innerHTML=`<span style="font-size:13px;font-weight:500;color:var(--accent-green);flex-shrink:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${s.member}${s.role==="admin"?" · 관리자":""}</span><button onclick="sessionStorage.removeItem('${SK}');location.reload()" style="margin-left:8px;font-size:12px;color:var(--text-muted);border:1px solid var(--accent-line);border-radius:999px;padding:6px 12px;background:none;cursor:pointer;font-family:inherit">로그아웃</button>`;
+  }else{
+    b.innerHTML=`<a id="_hdr_login" href="#" style="font-size:13px;font-weight:500;color:#2D5A3D;border:1px solid rgba(45,90,61,.3);border-radius:999px;padding:6px 16px;text-decoration:none">로그인</a>`;
+    document.getElementById("_hdr_login")?.addEventListener("click",(e)=>{e.preventDefault();showLoginModal(()=>{refreshAuthUI();updateAdminLink();renderBooks();renderWishlist();});});
+  }
+  document.body.classList.toggle("is-logged-in", isLoggedIn());
+  document.querySelectorAll("[data-auth='admin']").forEach(el=>{el.style.display=isAdmin()?"":"none";});
+  document.querySelectorAll("[data-auth='member']").forEach(el=>{el.style.display=isLoggedIn()?"":"none";});
+}
+
+function updateAdminLink(){ const l=document.getElementById("nav-admin");if(l)l.style.display=isAdmin()?"":"none"; }
+
+let books = {}, wishlist = {}, currentBook = null;
+let selectedBook = null, selectedWlBook = null;
+function showSetBookModal(item, onConfirm) {
+  const overlay = document.createElement("div");
+  overlay.className = "rating-popup-overlay";
+  const popup = document.createElement("div");
+  popup.className = "rating-popup";
+  popup.style.cssText = "max-width:320px;text-align:center;padding:32px 24px 24px;";
+  const coverHtml = item.image
+    ? `<img src="${toHiRes(item.image)}" style="width:52px;height:72px;object-fit:contain;border-radius:2px;margin:0 auto 16px;display:block;background:#f5f5f0;">`
+    : "";
+  popup.innerHTML = `
+    <button class="rating-popup-close">×</button>
+    ${coverHtml}
+    <div style="font-family:var(--font-serif);font-size:15px;font-weight:500;line-height:1.4;margin-bottom:10px">${item.title}</div>
+    <div style="font-size:13px;color:var(--text-muted);margin-bottom:24px">이달의 책으로 지정하시겠습니까?</div>
+    <div style="display:flex;gap:8px;">
+      <button id="_sb_cancel" style="flex:1;height:44px;border:1px solid var(--accent-line);border-radius:10px;font-size:14px;color:var(--text-secondary);background:none;cursor:pointer;font-family:inherit">취소</button>
+      <button id="_sb_ok" style="flex:1;height:44px;background:#2D5A3D;color:#FAFAF8;border-radius:10px;font-size:14px;font-weight:500;border:none;cursor:pointer;font-family:inherit">지정하기</button>
+    </div>`;
+  overlay.appendChild(popup);
+  function close() { overlay.remove(); }
+  popup.querySelector(".rating-popup-close").addEventListener("click", close);
+  overlay.addEventListener("click", e => { if (e.target === overlay) close(); });
+  popup.querySelector("#_sb_cancel").addEventListener("click", close);
+  popup.querySelector("#_sb_ok").addEventListener("click", async () => {
+    close();
+    await onConfirm();
+  });
+  document.body.appendChild(overlay);
+}
+
+function openRatingPopup(id, book) {
+  const overlay = document.createElement("div");
+  overlay.className = "rating-popup-overlay";
+  const getAvg = () => {
+    const vals = MEMBERS.map(m => (books[id]?.ratings || {})[m] || 0).filter(v => v > 0);
+    return vals.length ? (vals.reduce((a,b) => a+b, 0) / vals.length).toFixed(1) : null;
+  };
+  const coverUrl = book.image ? toHiRes(book.image) : "";
+  const popup = document.createElement("div");
+  popup.className = "rating-popup";
+  popup.innerHTML = `
+    <button class="rating-popup-close">×</button>
+    <div class="rating-popup-header">
+      ${coverUrl ? `<img class="rating-popup-cover" src="${coverUrl}" alt="">` : ""}
+      <div>
+        <div class="rating-popup-title">${book.title}</div>
+        <div class="rating-popup-author">${book.author || ""}</div>
+        <div class="rating-popup-avg${getAvg() ? "" : " empty"}" id="_rp_avg">${getAvg() ? `★ ${getAvg()}` : "평가 없음"}</div>
+      </div>
+    </div>
+    <div class="rating-popup-rows" id="_rp_rows"></div>`;
+  overlay.appendChild(popup);
+  const rowsEl = popup.querySelector("#_rp_rows");
+  const avgEl  = popup.querySelector("#_rp_avg");
+  function close() { overlay.remove(); }
+  MEMBERS.forEach(m => {
+    const row = document.createElement("div");
+    row.className = "rating-row";
+    const nameEl = document.createElement("span");
+    nameEl.className = "rating-name"; nameEl.textContent = m;
+    const starsEl = document.createElement("span");
+    starsEl.className = "rating-stars";
+    const canRate = isMember(m);
+    const buildStars = () => {
+      starsEl.innerHTML = "";
+      const cur = (books[id]?.ratings || {})[m] || 0;
+      for (let i = 1; i <= 5; i++) {
+        const s = document.createElement("button");
+        s.className = "star-btn" + (i <= cur ? " filled" : "");
+        s.textContent = i <= cur ? "★" : "☆";
+        if (!canRate) { s.style.cursor = "default"; s.style.opacity = "0.6"; }
+        else {
+          s.addEventListener("click", () => {
+            if (!books[id]) return;
+            if (!books[id].ratings) books[id].ratings = {};
+            const newVal = books[id].ratings[m] === i ? 0 : i;
+            books[id].ratings[m] = newVal;
+            if (!books[id].ratings[m]) delete books[id].ratings[m];
+            buildStars();
+            const a = getAvg();
+            avgEl.textContent = a ? `★ ${a}` : "평가 없음";
+            avgEl.className = "rating-popup-avg" + (a ? "" : " empty");
+            saveBooks(); renderBooks();
+          });
+        }
+        starsEl.appendChild(s);
+      }
+    };
+    buildStars();
+    row.appendChild(nameEl); row.appendChild(starsEl);
+    rowsEl.appendChild(row);
+  });
+  popup.querySelector(".rating-popup-close").addEventListener("click", close);
+  overlay.addEventListener("click", e => { if (e.target === overlay) close(); });
+  document.body.appendChild(overlay);
+}
+let bsLoaded = false;
+
+refreshAuthUI();
+updateAdminLink();
+
+// ── Add panel toggles ──
+function openAddPanel(panelId, btn, openLabel, closeLabel) {
+  if (!isLoggedIn()) {
+    showLoginModal(() => {
+      refreshAuthUI(); updateAdminLink();
+      document.getElementById(panelId).style.display = "block";
+      btn.textContent = closeLabel;
+    });
+    return;
+  }
+  const panel = document.getElementById(panelId);
+  const isOpen = panel.style.display === "block";
+  panel.style.display = isOpen ? "none" : "block";
+  btn.textContent = isOpen ? openLabel : closeLabel;
+}
+
+const toggleBookBtn = document.getElementById("toggle-book-add");
+const toggleWlBtn   = document.getElementById("toggle-wl-add");
+toggleBookBtn.addEventListener("click", () => openAddPanel("panel-book-add", toggleBookBtn, "＋ 읽은 책 추가", "▲ 닫기"));
+toggleWlBtn.addEventListener("click",   () => openAddPanel("panel-wl-add",   toggleWlBtn,   "＋ 읽고싶은 책 추가", "▲ 닫기"));
+
+// ── 베스트셀러에서 위시리스트 추가 ──
+function addToWishlistDirect(book) {
+  const s = getSession();
+  const id = String(Date.now());
+  wishlist[id] = { title: book.title, author: book.author, image: book.image, recommender: s ? s.member : "-" };
+  renderWishlist(); saveWishlist();
+  const short = book.title.length > 18 ? book.title.slice(0,18) + "…" : book.title;
+  toast(`"${short}" 읽고싶은 목록에 추가됐어요`);
+}
+
+// ── 이달의 책 표시 ──
+function renderCurrentBook() {
+  const banner = document.getElementById("current-book-banner");
+  const placeholder = document.getElementById("hero-feature-placeholder");
+  if (!banner) return;
+  if (!currentBook) {
+    banner.classList.remove("visible");
+    if (placeholder) placeholder.style.display = "";
+    return;
+  }
+  banner.classList.add("visible");
+  if (placeholder) placeholder.style.display = "none";
+  const cv = document.getElementById("cb-cover");
+  if (cv) { cv.src = toHiRes(currentBook.image) || ""; cv.style.visibility = currentBook.image ? "visible" : "hidden"; }
+  const t = document.getElementById("cb-title"); if (t) t.textContent = currentBook.title || "";
+  const a = document.getElementById("cb-author"); if (a) a.textContent = currentBook.author || "(저자 미상)";
+}
+
+// ── Toast ──
+let toastTimer;
+function toast(msg) {
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove("show"), 2000);
+}
+
+// ── Tab switching ──
+document.querySelectorAll(".tab-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById(`panel-${btn.dataset.tab}`).classList.add("active");
+    if (btn.dataset.tab === "bestseller" && !bsLoaded) loadBestsellers();
+  });
+});
+
+// ── Firebase ──
+onValue(booksRef, snap => { books = snap.val() || {}; renderBooks(); });
+onValue(wishlistRef, snap => { wishlist = snap.val() || {}; renderWishlist(); });
+onValue(currentBookRef, snap => { currentBook = snap.val() || null; renderCurrentBook(); });
+
+async function saveBooks() {
+  try { await set(booksRef, books); } catch { toast("저장 실패"); }
+}
+async function saveWishlist() {
+  try { await set(wishlistRef, wishlist); } catch { toast("저장 실패"); }
+}
+async function saveCurrentBook() {
+  try { await set(currentBookRef, currentBook); } catch { toast("저장 실패"); }
+}
+
+// ── Kakao search ──
+async function searchKakao(q) {
+  if (!q.trim()) return [];
+  try {
+    const res = await fetch(
+      `https://dapi.kakao.com/v3/search/book?query=${encodeURIComponent(q)}&size=10`,
+      { headers: { Authorization: `KakaoAK ${KAKAO_KEY}` } }
+    );
+    if (!res.ok) return [];
+    const json = await res.json();
+    return (json.documents || []).map(d => ({
+      title: d.title,
+      author: d.authors?.join(", ") || "",
+      image: toHiRes(d.thumbnail) || ""
+    }));
+  } catch { return []; }
+}
+
+function buildSearchResults(results, onSelect) {
+  if (!results.length) return '<div class="search-empty">검색 결과가 없어요</div>';
+  const wrap = document.createElement("div");
+  results.forEach(r => {
+    const item = document.createElement("div");
+    item.className = "search-result-item";
+    const img = document.createElement("img");
+    img.className = "sr-cover"; img.alt = "";
+    if (r.image) img.src = r.image;
+    const info = document.createElement("div");
+    info.className = "sr-info";
+    info.innerHTML = `<div class="sr-title">${r.title}</div><div class="sr-author">${r.author || "(저자 미상)"}</div>`;
+    item.appendChild(img); item.appendChild(info);
+    item.addEventListener("click", () => onSelect(r));
+    wrap.appendChild(item);
+  });
+  return wrap;
+}
+
+// ── 읽은 책 search ──
+let bookTimer;
+const bookInput  = document.getElementById("book-search");
+const bookResEl  = document.getElementById("book-results");
+const bookSelEl  = document.getElementById("book-selected");
+const bookAddRow = document.getElementById("book-add-row");
+
+function doBookSearch(q) {
+  bookResEl.innerHTML = '<div class="search-loading">검색 중...</div>';
+  searchKakao(q).then(r => {
+    bookResEl.innerHTML = "";
+    const el = buildSearchResults(r, selectBook);
+    if (typeof el === "string") bookResEl.innerHTML = el;
+    else bookResEl.appendChild(el);
+  });
+}
+bookInput.addEventListener("input", () => {
+  clearTimeout(bookTimer);
+  if (!bookInput.value.trim()) { bookResEl.innerHTML = ""; return; }
+  bookTimer = setTimeout(() => doBookSearch(bookInput.value), 400);
+});
+bookInput.addEventListener("keydown", e => { if (e.key === "Enter") { clearTimeout(bookTimer); doBookSearch(bookInput.value); } });
+document.getElementById("book-search-btn").addEventListener("click", () => doBookSearch(bookInput.value));
+
+function selectBook(book) {
+  selectedBook = book;
+  document.getElementById("book-sel-title").textContent  = book.title;
+  document.getElementById("book-sel-author").textContent = book.author || "(저자 미상)";
+  const coverEl = document.getElementById("book-sel-cover");
+  coverEl.src = book.image || ""; coverEl.style.visibility = book.image ? "visible" : "hidden";
+  bookSelEl.classList.add("show");
+  bookAddRow.classList.add("show");
+  bookResEl.innerHTML = ""; bookInput.value = "";
+}
+document.getElementById("book-sel-clear").addEventListener("click", () => {
+  selectedBook = null;
+  bookSelEl.classList.remove("show");
+  bookAddRow.classList.remove("show");
+});
+document.getElementById("book-add-btn").addEventListener("click", () => {
+  if (!selectedBook) return;
+  const id = String(Date.now());
+  books[id] = { title: selectedBook.title, author: selectedBook.author || "", image: selectedBook.image || "", ratings: {} };
+  selectedBook = null;
+  bookSelEl.classList.remove("show");
+  bookAddRow.classList.remove("show");
+  renderBooks(); saveBooks(); toast("추가됐어요");
+});
+
+// ── Render 읽은 책 ──
+function renderBooks() {
+  const grid = document.getElementById("books-grid");
+  const ids  = Object.keys(books).sort((a, b) => b.localeCompare(a));
+  document.getElementById("count-read").textContent = ids.length;
+  const bgNum = document.getElementById("hero-bg-num");
+  if (bgNum) bgNum.textContent = ids.length;
+  if (!ids.length) { grid.innerHTML = '<p class="books-empty">아직 등록된 책이 없어요</p>'; return; }
+  grid.innerHTML = "";
+  ids.forEach((id, idx) => grid.appendChild(makeBookCard(id, books[id], idx + 1)));
+}
+
+function makeBookCard(id, book, num) {
+  const card = document.createElement("div");
+  card.className = "book-card";
+
+  const ratings = book.ratings || {};
+  const vals    = MEMBERS.map(m => ratings[m] || 0).filter(v => v > 0);
+  const avg     = vals.length ? (vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(1) : null;
+
+  // Number
+  const numEl = document.createElement("span");
+  numEl.className = "book-card-num";
+  numEl.textContent = String(num).padStart(2, "0");
+
+  // Cover
+  const coverWrap = document.createElement("div");
+  coverWrap.className = "book-card-cover-wrap";
+  if (book.image) {
+    const img = document.createElement("img");
+    img.className = "book-card-cover-img"; img.alt = "";
+    img.src = toHiRes(book.image);
+    img.onerror = () => {
+      coverWrap.innerHTML = '<div class="book-card-cover-placeholder">📖</div>';
+      repairImage(id, book.title, books, saveBooks);
+    };
+    coverWrap.appendChild(img);
+  } else {
+    coverWrap.innerHTML = '<div class="book-card-cover-placeholder">📖</div>';
+  }
+
+  // Title
+  const titleEl = document.createElement("div");
+  titleEl.className = "book-card-title";
+  titleEl.textContent = book.title;
+
+  // Author
+  const authorEl = document.createElement("div");
+  authorEl.className = "book-card-author";
+  authorEl.textContent = book.author || "(저자 미상)";
+
+  // Footer
+  const footer = document.createElement("div");
+  footer.className = "book-card-footer";
+  const avgEl = document.createElement("span");
+  avgEl.className = "book-card-avg" + (avg ? "" : " empty");
+  avgEl.textContent = avg ? `★ ${avg}` : "평가 없음";
+  footer.appendChild(avgEl);
+
+  if (isAdmin()) {
+    const delBtn = document.createElement("button");
+    delBtn.className = "book-card-delete";
+    delBtn.setAttribute("aria-label", "삭제");
+    delBtn.textContent = "×";
+    delBtn.addEventListener("click", e => {
+      e.stopPropagation();
+      if (!confirm(`"${book.title}" 을(를) 삭제할까요?`)) return;
+      delete books[id];
+      renderBooks(); saveBooks();
+    });
+    footer.appendChild(delBtn);
+  }
+
+  // Open rating popup on card click
+  card.addEventListener("click", e => {
+    if (e.target.closest(".book-card-delete")) return;
+    openRatingPopup(id, book);
+  });
+
+  card.appendChild(numEl);
+  card.appendChild(coverWrap);
+  card.appendChild(titleEl);
+  card.appendChild(authorEl);
+  card.appendChild(footer);
+  return card;
+}
+
+// ── Wishlist search ──
+let wlTimer;
+const wlInput  = document.getElementById("wl-search");
+const wlResEl  = document.getElementById("wl-results");
+const wlSelEl  = document.getElementById("wl-selected");
+const wlAddRow = document.getElementById("wl-add-row");
+const wlRec    = document.getElementById("wl-recommender");
+const wlAddBtn = document.getElementById("wl-add-btn");
+
+function doWlSearch(q) {
+  wlResEl.innerHTML = '<div class="search-loading">검색 중...</div>';
+  searchKakao(q).then(r => {
+    wlResEl.innerHTML = "";
+    const el = buildSearchResults(r, selectWlBook);
+    if (typeof el === "string") wlResEl.innerHTML = el;
+    else wlResEl.appendChild(el);
+  });
+}
+wlInput.addEventListener("input", () => {
+  clearTimeout(wlTimer);
+  if (!wlInput.value.trim()) { wlResEl.innerHTML = ""; return; }
+  wlTimer = setTimeout(() => doWlSearch(wlInput.value), 400);
+});
+wlInput.addEventListener("keydown", e => { if (e.key === "Enter") { clearTimeout(wlTimer); doWlSearch(wlInput.value); } });
+document.getElementById("wl-search-btn").addEventListener("click", () => doWlSearch(wlInput.value));
+
+function selectWlBook(book) {
+  selectedWlBook = book;
+  document.getElementById("wl-sel-title").textContent  = book.title;
+  document.getElementById("wl-sel-author").textContent = book.author || "(저자 미상)";
+  const coverEl = document.getElementById("wl-sel-cover");
+  coverEl.src = book.image || ""; coverEl.style.visibility = book.image ? "visible" : "hidden";
+  wlSelEl.classList.add("show");
+  wlAddRow.classList.add("show");
+  wlResEl.innerHTML = ""; wlInput.value = "";
+  updateWlBtn();
+}
+document.getElementById("wl-sel-clear").addEventListener("click", () => {
+  selectedWlBook = null; wlRec.value = "";
+  wlSelEl.classList.remove("show"); wlAddRow.classList.remove("show");
+  updateWlBtn();
+});
+wlRec.addEventListener("change", updateWlBtn);
+function updateWlBtn() { wlAddBtn.disabled = !(selectedWlBook && wlRec.value); }
+
+wlAddBtn.addEventListener("click", () => {
+  if (!selectedWlBook || !wlRec.value) return;
+  const id = String(Date.now());
+  wishlist[id] = { title: selectedWlBook.title, author: selectedWlBook.author || "", image: selectedWlBook.image || "", recommender: wlRec.value };
+  selectedWlBook = null; wlRec.value = "";
+  wlSelEl.classList.remove("show"); wlAddRow.classList.remove("show");
+  updateWlBtn(); renderWishlist(); saveWishlist(); toast("추가됐어요");
+});
+
+// ── Render 읽고싶은 ──
+function renderWishlist() {
+  const grid = document.getElementById("wl-grid");
+  const ids  = Object.keys(wishlist).sort((a, b) => b.localeCompare(a));
+  document.getElementById("count-wishlist").textContent = ids.length;
+  if (!ids.length) { grid.innerHTML = '<p class="wl-empty">아직 등록된 책이 없어요<br>위에서 책을 검색해 추가해보세요</p>'; return; }
+  grid.innerHTML = "";
+  ids.forEach((id, idx) => grid.appendChild(makeWlCard(id, wishlist[id], idx + 1)));
+}
+
+function makeWlCard(id, item, num) {
+  const card = document.createElement("div");
+  card.className = "wl-card";
+
+  const numEl = document.createElement("span");
+  numEl.className = "wl-card-num";
+  numEl.textContent = String(num).padStart(2, "0");
+
+  const coverContainer = document.createElement("div");
+  coverContainer.className = "wl-cover-container";
+  const coverWrap = document.createElement("div");
+  coverWrap.className = "wl-card-cover-wrap";
+  if (item.image) {
+    const img = document.createElement("img");
+    img.className = "wl-card-cover-img"; img.alt = "";
+    img.src = toHiRes(item.image);
+    img.onerror = () => {
+      coverWrap.innerHTML = '<div class="wl-card-cover-placeholder">📖</div>';
+      repairImage(id, item.title, wishlist, saveWishlist);
+    };
+    coverWrap.appendChild(img);
+  } else {
+    coverWrap.innerHTML = '<div class="wl-card-cover-placeholder">📖</div>';
+  }
+  coverContainer.appendChild(coverWrap);
+
+  const titleEl = document.createElement("div");
+  titleEl.className = "wl-card-title";
+  titleEl.textContent = item.title;
+
+  const authorEl = document.createElement("div");
+  authorEl.className = "wl-card-author";
+  authorEl.textContent = item.author || "(저자 미상)";
+
+  const footer = document.createElement("div");
+  footer.className = "wl-card-footer";
+
+  const recTag = document.createElement("span");
+  recTag.className = "wl-recommender-tag";
+  recTag.textContent = `추천 · ${item.recommender || "-"}`;
+  footer.appendChild(recTag);
+
+  if (isAdmin()) {
+    card.classList.add("admin-mode");
+    card.addEventListener("click", e => {
+      if (e.target.closest(".wl-del-btn")) return;
+      showSetBookModal(item, async () => {
+        currentBook = { title: item.title, author: item.author || "", image: item.image || "" };
+        delete wishlist[id];
+        renderWishlist();
+        await Promise.all([saveWishlist(), saveCurrentBook()]);
+        toast("이달의 책으로 지정됐어요 ✦");
+      });
+    });
+
+    const delBtn = document.createElement("button");
+    delBtn.className = "wl-del-btn";
+    delBtn.setAttribute("aria-label", "삭제");
+    delBtn.textContent = "×";
+    delBtn.addEventListener("click", () => {
+      if (!confirm(`"${item.title}" 을(를) 삭제할까요?`)) return;
+      delete wishlist[id]; renderWishlist(); saveWishlist();
+    });
+    footer.appendChild(delBtn);
+  }
+
+  card.appendChild(numEl);
+  card.appendChild(coverContainer);
+  card.appendChild(titleEl);
+  card.appendChild(authorEl);
+  card.appendChild(footer);
+  return card;
+}
+
+// ── Bestseller (Aladin JSONP) ──
+function fetchAladin() {
+  return new Promise((resolve, reject) => {
+    const cb = `__aladin_${Date.now()}`;
+    const params = new URLSearchParams({
+      ttbkey: ALADIN_KEY, QueryType: "Bestseller",
+      MaxResults: "50", start: "1", SearchTarget: "Book",
+      output: "js", Version: "20131101", Callback: cb
+    });
+    const script = document.createElement("script");
+    let timer;
+    const cleanup = () => {
+      try { delete window[cb]; } catch { window[cb] = undefined; }
+      if (script.parentNode) script.parentNode.removeChild(script);
+      clearTimeout(timer);
+    };
+    window[cb] = data => { cleanup(); resolve(data); };
+    script.onerror = () => { cleanup(); reject(new Error("로드 실패")); };
+    timer = setTimeout(() => { cleanup(); reject(new Error("시간 초과")); }, 12000);
+    script.src = `https://www.aladin.co.kr/ttb/api/ItemList.aspx?${params}`;
+    document.head.appendChild(script);
+  });
+}
+
+async function loadBestsellers(force = false) {
+  bsLoaded = true;
+  const grid   = document.getElementById("bs-grid");
+  const metaEl = document.getElementById("bs-meta");
+  const refBtn = document.getElementById("bs-refresh");
+
+  if (!force) {
+    try {
+      const raw = localStorage.getItem(BS_CACHE_KEY);
+      if (raw) {
+        const { data, ts } = JSON.parse(raw);
+        if (data && Date.now() - ts < BS_CACHE_TTL) { renderBs(data, ts); return; }
+      }
+    } catch {}
+  }
+
+  grid.innerHTML = '<p class="bestseller-loading">불러오는 중...</p>';
+  refBtn.disabled = true;
+  try {
+    const data = await fetchAladin();
+    if (!Array.isArray(data?.item)) throw new Error("응답 오류");
+    localStorage.setItem(BS_CACHE_KEY, JSON.stringify({ data, ts: Date.now() }));
+    renderBs(data, Date.now());
+  } catch (e) {
+    grid.innerHTML = `<p class="bestseller-error">불러오지 못했어요.<br><small>${e.message}</small></p>`;
+  } finally {
+    refBtn.disabled = false;
+  }
+}
+
+function renderBs(data, ts) {
+  const grid   = document.getElementById("bs-grid");
+  const metaEl = document.getElementById("bs-meta");
+  const d = new Date(ts);
+  metaEl.textContent = `알라딘 주간 베스트셀러 TOP ${data.item.length} · ${d.getHours()}:${String(d.getMinutes()).padStart(2,"0")} 기준`;
+  grid.innerHTML = "";
+
+  // TOP3: 시상대 순서 (2위, 1위, 3위)
+  const top3Wrap = document.createElement("div");
+  top3Wrap.className = "bs-top3";
+  [1, 0, 2].forEach(i => {
+    const it = data.item[i];
+    if (!it) return;
+    const rank = it.bestRank || (i + 1);
+    const isFirst = rank === 1;
+    const cell = document.createElement("div");
+    cell.className = `bs-top3-cell${isFirst ? " rank-1" : ""}`;
+    const rankEl = document.createElement("div");
+    rankEl.className = "bs-top3-rank";
+    rankEl.textContent = isFirst ? `★ ${rank}위` : `${rank}위`;
+    const img = document.createElement("img");
+    img.className = "bs-top3-cover"; img.alt = ""; img.src = it.cover || "";
+    const titleEl = document.createElement("div");
+    titleEl.className = "bs-top3-title";
+    titleEl.textContent = it.title || "(제목 없음)";
+    const authorEl = document.createElement("div");
+    authorEl.className = "bs-top3-author";
+    authorEl.textContent = it.author || "";
+    const addBtn = document.createElement("button");
+    addBtn.className = "bs-add-btn";
+    addBtn.textContent = "+ 읽고싶은";
+    addBtn.addEventListener("click", (e) => {
+      const btn = e.currentTarget;
+      if (btn.classList.contains("added")) return;
+      const bookData = { title: it.title, author: it.author || "", image: it.cover || "" };
+      if (!isLoggedIn()) {
+        showLoginModal(() => { refreshAuthUI(); updateAdminLink(); addToWishlistDirect(bookData); btn.textContent = "✓ 추가됨"; btn.classList.add("added"); });
+        return;
+      }
+      addToWishlistDirect(bookData);
+      btn.textContent = "✓ 추가됨";
+      btn.classList.add("added");
+    });
+    cell.appendChild(rankEl); cell.appendChild(img);
+    cell.appendChild(titleEl); cell.appendChild(authorEl); cell.appendChild(addBtn);
+    top3Wrap.appendChild(cell);
+  });
+  grid.appendChild(top3Wrap);
+
+  // 나머지 (4위~)
+  const restWrap = document.createElement("div");
+  restWrap.className = "bs-rest-list";
+  data.item.slice(3).forEach((it, i) => {
+    const rank = it.bestRank || (i + 4);
+    const row = document.createElement("div");
+    row.className = "bs-rest-row";
+    row.innerHTML = `
+      <span class="bs-rest-rank">${rank}</span>
+      <img class="bs-rest-cover" src="${it.cover || ""}" alt="">
+      <div class="bs-rest-info">
+        <a class="bs-rest-title" href="${it.link || "#"}" target="_blank" rel="noopener">${it.title || "(제목 없음)"}</a>
+        <div class="bs-rest-author">${it.author || ""}</div>
+      </div>
+      <button class="bs-add-btn">+ 읽고싶은</button>`;
+    row.querySelector(".bs-add-btn").addEventListener("click", (e) => {
+      const btn = e.currentTarget;
+      if (btn.classList.contains("added")) return;
+      const bookData = { title: it.title, author: it.author || "", image: it.cover || "" };
+      if (!isLoggedIn()) {
+        showLoginModal(() => { refreshAuthUI(); updateAdminLink(); addToWishlistDirect(bookData); btn.textContent = "✓ 추가됨"; btn.classList.add("added"); });
+        return;
+      }
+      addToWishlistDirect(bookData);
+      btn.textContent = "✓ 추가됨";
+      btn.classList.add("added");
+    });
+    restWrap.appendChild(row);
+  });
+  grid.appendChild(restWrap);
+}
+
+document.getElementById("bs-refresh").addEventListener("click", () => loadBestsellers(true));
+
+</script>
+<script>
+function toggleNav(btn){
+  const nav=document.getElementById('primary-nav');
+  const open=nav.classList.toggle('open');
+  btn.setAttribute('aria-expanded',open);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,483 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%232D5A3D'/><path d='M10 11h12v10H10z' fill='%23FAFAF8'/><path d='M16 11v10' stroke='%232D5A3D' stroke-width='1'/></svg>">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — 공간일기</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500&family=Noto+Serif+KR:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { background: #ffffff; }
+    .header { background: rgba(250,250,248,0.78); border-bottom-color: rgba(0,0,0,0.08); }
+    .footer { background: #FAFAF8; border-top-color: rgba(0,0,0,0.08); }
+    .nav-mobile-toggle { color: #0F0F0E; }
+    .nav-mobile-toggle:hover { background: #F3F1EA; }
+    .nav.open { background: #FFFFFF; border-bottom-color: rgba(0,0,0,0.08); }
+    .nav.open a { border-bottom-color: rgba(0,0,0,0.08); }
+
+    /* ── Hero ── */
+    .admin-hero {
+      border-bottom: 1px solid var(--accent-line);
+      padding: 52px 0 44px;
+    }
+    .admin-hero-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 var(--gutter); }
+    .admin-hero-inner .label-mono { display: block; margin-bottom: 14px; }
+    .admin-hero-title {
+      font-family: var(--font-serif);
+      font-size: var(--text-hero);
+      font-weight: 400; letter-spacing: -0.025em;
+    }
+
+    /* ── Main layout ── */
+    .admin-main {
+      max-width: var(--max-w); margin: 0 auto;
+      padding: 48px var(--gutter) 100px;
+      display: flex; flex-direction: column; gap: 48px;
+    }
+
+    /* ── Section ── */
+    .admin-section-title {
+      font-family: var(--font-sans);
+      font-size: 18px; font-weight: 500; letter-spacing: -0.01em;
+      margin-bottom: 20px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .section-count {
+      font-family: var(--font-sans); font-size: var(--text-label);
+      color: var(--text-muted); font-weight: 400; letter-spacing: 0.06em;
+    }
+
+    /* ── Application cards ── */
+    .applications-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+    .app-card {
+      background: var(--bg-elev);
+      border: 1px solid var(--accent-line);
+      border-radius: var(--radius-card);
+      padding: 20px 22px;
+      transition: border-color 0.2s;
+    }
+    .app-card:hover { border-color: rgba(74,103,65,0.3); }
+    .app-name { font-size: 15px; font-weight: 500; margin-bottom: 4px; }
+    .app-at {
+      font-family: var(--font-sans); font-size: var(--text-label);
+      color: var(--text-muted); margin-bottom: 14px; letter-spacing: 0.06em;
+    }
+    .app-detail {
+      font-size: var(--text-small); color: var(--text-secondary);
+      margin-bottom: 6px; display: flex; gap: 6px;
+    }
+    .app-detail-label {
+      font-family: var(--font-sans); font-size: var(--text-label);
+      color: var(--text-muted); text-transform: uppercase;
+      letter-spacing: 0.06em; flex-shrink: 0; width: 54px;
+      line-height: var(--lh-normal);
+    }
+    .app-intro {
+      font-size: var(--text-small); color: var(--text-secondary);
+      font-style: italic; margin-top: 10px; padding-top: 10px;
+      border-top: 1px solid var(--accent-line);
+      line-height: var(--lh-normal);
+    }
+    .app-actions { display: flex; gap: 8px; margin-top: 16px; }
+    .app-accept-btn {
+      flex: 1; height: 36px;
+      background: var(--accent-green); color: var(--text-on-dark);
+      border-radius: var(--radius-sm); font-size: var(--text-small); font-weight: 400;
+      transition: background 0.18s;
+    }
+    .app-accept-btn:hover { background: var(--accent-deep); }
+    .app-delete-btn {
+      width: 36px; height: 36px; border-radius: var(--radius-sm);
+      font-size: 16px; color: var(--text-muted);
+      border: 1px solid var(--accent-line);
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.18s, color 0.18s, border-color 0.18s;
+    }
+    .app-delete-btn:hover { background: rgba(201,75,75,0.06); color: #C94B4B; border-color: rgba(201,75,75,0.3); }
+    .apps-empty { font-size: var(--text-body); color: var(--text-muted); padding: 32px 0; }
+
+    /* ── PIN 관리 ── */
+    .pin-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 14px;
+    }
+    .pin-card {
+      background: var(--bg-elev);
+      border: 1px solid var(--accent-line);
+      border-radius: var(--radius-card);
+      padding: 18px 20px;
+    }
+    .pin-member-name { font-size: var(--text-body); font-weight: 500; margin-bottom: 12px; }
+    .pin-row { display: flex; gap: 8px; align-items: center; }
+    .pin-input {
+      flex: 1; min-width: 0; height: 40px; padding: 0 12px;
+      border: 1px solid var(--accent-line);
+      border-radius: var(--radius-md);
+      font-family: var(--font-mono); font-size: 16px; letter-spacing: 0.2em;
+      color: var(--text-primary); background: var(--bg-base);
+      outline: none; transition: border-color 0.18s;
+    }
+    .pin-input:focus { border-color: rgba(74,103,65,0.4); }
+    .pin-save-btn {
+      height: 40px; padding: 0 16px;
+      background: var(--accent-green); color: var(--text-on-dark);
+      border-radius: var(--radius-sm); font-size: var(--text-small); font-weight: 400;
+      transition: background 0.18s;
+    }
+    .pin-save-btn:hover { background: var(--accent-deep); }
+    .pin-status { font-size: var(--text-label); color: var(--accent-green); margin-top: 6px; height: 14px; }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      background: var(--accent-deep); color: var(--text-on-dark);
+      padding: 10px 20px; border-radius: var(--radius-md);
+      font-size: var(--text-small); opacity: 0; pointer-events: none;
+      transition: opacity 0.3s; z-index: 999;
+    }
+    .toast.show { opacity: 1; }
+
+    /* ── Auth gate overlay ── */
+    #auth-gate {
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; min-height: 60vh; gap: 16px;
+    }
+    #auth-gate p { font-size: var(--text-body); color: var(--text-secondary); }
+    #auth-gate button {
+      padding: 10px 28px;
+      background: var(--accent-green); color: var(--text-on-dark);
+      border-radius: var(--radius-sm); font-size: var(--text-body); font-weight: 400;
+    }
+
+    @media (max-width: 720px) {
+      :root { --gutter: 20px; }
+      .applications-grid { grid-template-columns: 1fr; }
+      .pin-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <span class="logo-ko">공간일기</span>
+    </a>
+    <div style="display:flex;align-items:center;gap:20px;">
+      <nav class="nav" id="primary-nav">
+        <a href="index.html">HOME</a>
+        <a href="about.html">ABOUT</a>
+        <a href="books.html">BOOKS</a>
+        <a href="schedule.html">SCHEDULE</a>
+        <a href="admin.html" class="active">ADMIN</a>
+      </nav>
+      <div id="auth-badge" style="display:flex;align-items:center;flex-shrink:1;min-width:0;overflow:hidden;"></div>
+      <button class="nav-mobile-toggle" aria-label="메뉴 열기" aria-expanded="false" onclick="toggleNav(this)">
+        <svg width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <line x1="1" y1="1" x2="19" y2="1"/><line x1="1" y1="7" x2="19" y2="7"/><line x1="1" y1="13" x2="19" y2="13"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<section class="admin-hero">
+  <div class="admin-hero-inner">
+    <span class="label-mono">ADMIN · 관리자 패널</span>
+    <h1 class="admin-hero-title">관리자</h1>
+  </div>
+</section>
+
+<!-- 비로그인 게이트 -->
+<div id="auth-gate" style="display:none">
+  <p>관리자 로그인이 필요합니다</p>
+  <button id="gate-login-btn">로그인하기</button>
+</div>
+
+<!-- 관리자 콘텐츠 -->
+<main class="admin-main" id="admin-content" style="display:none">
+
+  <!-- 신청자 목록 -->
+  <section class="admin-section">
+    <h2 class="admin-section-title">
+      멤버 신청자 목록
+      <span class="section-count" id="apps-count">0건</span>
+    </h2>
+    <div class="applications-grid" id="apps-grid">
+      <p class="apps-empty">불러오는 중...</p>
+    </div>
+  </section>
+
+  <!-- PIN 관리 -->
+  <section class="admin-section">
+    <h2 class="admin-section-title">PIN 관리</h2>
+    <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">
+      각 멤버의 PIN을 변경합니다. 변경 후 즉시 Firebase에 저장됩니다.
+    </p>
+    <div class="pin-grid" id="pin-grid"></div>
+  </section>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<footer class="footer">
+  <div class="footer-content">
+    <div class="footer-left">
+      <strong>공간일기</strong>
+      <span class="label-mono">· EST. 2025</span>
+    </div>
+    <div class="footer-right">
+      <a href="#" aria-label="Instagram">Instagram</a>
+      <span class="footer-sep">·</span>
+      <a href="mailto:hello@gonggan.kr" aria-label="Email">Email</a>
+    </div>
+  </div>
+</footer>
+
+<script type="module">
+import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+import { getDatabase, ref, onValue, set, remove, get } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCjtgMykJPKnsAORcfgQ9FxbPnzNEj_fEc",
+  authDomain: "book-56493.firebaseapp.com",
+  databaseURL: "https://book-56493-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "book-56493",
+  storageBucket: "book-56493.firebasestorage.app",
+  messagingSenderId: "900836361804",
+  appId: "1:900836361804:web:17d21b68011427a7e796e9"
+};
+
+const MEMBERS = ["진협", "수화", "애리", "유영", "혜진"];
+
+const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const appsRef  = ref(db, "book-club/applications");
+const pinsRef  = ref(db, "book-club/pins");
+
+// ── 인라인 Auth ────────────────────────────────────────────
+const SK = "gonggan-session";
+const ADMIN_MBR = "혜진";
+const DEF_PINS  = {"진협":"1234","수화":"2345","애리":"3456","유영":"4567","혜진":"0000"};
+
+function getSession(){ try{const r=sessionStorage.getItem(SK);return r?JSON.parse(r):null;}catch{return null;} }
+function isAdmin(){ const s=getSession();return !!(s&&s.role==="admin"); }
+function isLoggedIn(){ return getSession()!==null; }
+
+async function loginUser(pin){
+  let pins=DEF_PINS;
+  try{const snap=await get(pinsRef);if(snap.exists())pins=snap.val();}catch{}
+  const member=MEMBERS.find(m=>String(pins[m])===String(pin));
+  if(!member)return false;
+  sessionStorage.setItem(SK,JSON.stringify({member,role:member===ADMIN_MBR?"admin":"member"}));
+  return true;
+}
+
+let _modal=null;
+function showLoginModal(cb){
+  if(_modal)return;
+  const o=document.createElement("div");
+  o.style.cssText="position:fixed;inset:0;z-index:9999;background:rgba(15,15,14,.55);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;";
+  o.innerHTML=`<div style="background:#F4EFE6;border-radius:8px;padding:40px 36px;width:min(420px,calc(100vw - 32px));position:relative;box-shadow:0 16px 48px rgba(0,0,0,.12)">
+    <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:24px"><span style="font-family:'Noto Serif KR',Georgia,serif;font-size:18px;font-weight:400">공간일기</span><span style="font-family:'Noto Sans KR',sans-serif;font-size:11px;letter-spacing:.06em;color:#8C8478">GONGGAN DIARY</span></div>
+    <h2 style="font-family:'Noto Serif KR',Georgia,serif;font-size:22px;font-weight:400;letter-spacing:-.02em;margin-bottom:24px">관리자 로그인</h2>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px"><span style="font-family:'Noto Sans KR',sans-serif;font-size:11px;letter-spacing:.06em;color:#8C8478;text-transform:uppercase;white-space:nowrap">PIN</span><input id="_ml_pin" type="password" inputmode="numeric" maxlength="4" placeholder="••••" style="flex:1;min-width:0;box-sizing:border-box;-webkit-appearance:none;height:46px;border:1px solid rgba(74,103,65,.2);border-radius:6px;padding:0 16px;font-size:20px;font-family:'Noto Sans KR',sans-serif;outline:none;background:#EDE7DA"></div>
+    <p id="_ml_err" style="min-height:18px;font-size:12px;color:#C94B4B;margin-bottom:16px"></p>
+    <button id="_ml_ok" style="width:100%;height:48px;background:#4A6741;color:#F4EFE6;border-radius:4px;font-size:15px;font-weight:400;border:none;cursor:pointer;font-family:inherit">로그인</button>
+    <button id="_ml_x" style="position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:4px;font-size:18px;color:#8C8478;background:none;border:none;cursor:pointer">×</button>
+  </div>`;
+  document.body.appendChild(o);_modal=o;
+  async function doLogin(){
+    const pin=document.getElementById("_ml_pin").value.trim();
+    const err=document.getElementById("_ml_err");
+    if(!pin){err.textContent="PIN을 입력해주세요";return;}
+    const sb=document.getElementById("_ml_ok");
+    sb.textContent="확인 중...";sb.disabled=true;
+    if(await loginUser(pin)){closeMod();if(cb)cb(getSession());else location.reload();}
+    else{err.textContent="PIN이 올바르지 않아요";document.getElementById("_ml_pin").value="";sb.textContent="로그인";sb.disabled=false;}
+  }
+  document.getElementById("_ml_ok").addEventListener("click",doLogin);
+  document.getElementById("_ml_pin").addEventListener("keydown",e=>{if(e.key==="Enter")doLogin();});
+  document.getElementById("_ml_x").addEventListener("click",closeMod);
+  o.addEventListener("click",e=>{if(e.target===o)closeMod();});
+}
+function closeMod(){if(_modal){_modal.remove();_modal=null;}}
+
+function refreshAuthUI(){
+  const s=getSession(),b=document.getElementById("auth-badge");
+  if(!b)return;
+  if(s){
+    b.innerHTML=`<span style="font-size:13px;font-weight:500;color:#2D5A3D;flex-shrink:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${s.member}${s.role==="admin"?" · 관리자":""}</span><button onclick="sessionStorage.removeItem('${SK}');location.reload()" style="margin-left:8px;font-size:12px;color:#999993;border:1px solid rgba(45,90,61,.12);border-radius:999px;padding:6px 12px;background:none;cursor:pointer;font-family:inherit">로그아웃</button>`;
+  }else{
+    b.innerHTML=`<button id="_hdr_login" style="font-size:13px;font-weight:500;color:#2D5A3D;border:1px solid rgba(45,90,61,.3);border-radius:999px;padding:6px 16px;background:none;cursor:pointer;font-family:inherit">로그인</button>`;
+    document.getElementById("_hdr_login")?.addEventListener("click",()=>showLoginModal(()=>checkAccess()));
+  }
+}
+// ── End Auth ───────────────────────────────────────────────
+
+let currentPins = {};
+
+function checkAccess() {
+  refreshAuthUI();
+  const gateEl    = document.getElementById("auth-gate");
+  const contentEl = document.getElementById("admin-content");
+  if (isAdmin()) {
+    gateEl.style.display    = "none";
+    contentEl.style.display = "";
+    loadData();
+  } else {
+    gateEl.style.display    = "";
+    contentEl.style.display = "none";
+  }
+}
+
+document.getElementById("gate-login-btn").addEventListener("click", () => {
+  showLoginModal(session => { checkAccess(); });
+});
+
+checkAccess();
+
+// ── Load data ──────────────────────────────────────────────
+function loadData() {
+  onValue(appsRef, snap => {
+    renderApplications(snap.val() || {});
+  });
+  onValue(pinsRef, snap => {
+    currentPins = snap.val() || {};
+    renderPins();
+  });
+}
+
+// ── Applications ───────────────────────────────────────────
+function renderApplications(data) {
+  const grid  = document.getElementById("apps-grid");
+  const count = document.getElementById("apps-count");
+  const ids   = Object.keys(data).sort((a, b) => b.localeCompare(a));
+  count.textContent = `${ids.length}건`;
+
+  if (!ids.length) {
+    grid.innerHTML = '<p class="apps-empty">신청자가 없어요</p>';
+    return;
+  }
+
+  grid.innerHTML = "";
+  ids.forEach(id => {
+    const app = data[id];
+    const card = document.createElement("div");
+    card.className = "app-card";
+
+    const at = app.at ? new Date(app.at).toLocaleString("ko-KR", {
+      month: "2-digit", day: "2-digit",
+      hour: "2-digit", minute: "2-digit"
+    }) : "";
+
+    card.innerHTML = `
+      <div class="app-name">${escHtml(app.name || "-")}</div>
+      <div class="app-at">${at}</div>
+      <div class="app-detail">
+        <span class="app-detail-label">연락처</span>
+        <span>${escHtml(app.contact || "-")}</span>
+      </div>
+      <div class="app-detail">
+        <span class="app-detail-label">장르</span>
+        <span>${escHtml(app.genre || "-")}</span>
+      </div>
+      ${app.intro ? `<p class="app-intro">"${escHtml(app.intro)}"</p>` : ""}
+      <div class="app-actions">
+        <button class="app-accept-btn">수락 (추후 연결)</button>
+        <button class="app-delete-btn" title="삭제">×</button>
+      </div>`;
+
+    card.querySelector(".app-accept-btn").addEventListener("click", () => {
+      toast(`${app.name}님 수락 — 멤버 추가 기능은 추후 연결됩니다`);
+    });
+    card.querySelector(".app-delete-btn").addEventListener("click", async () => {
+      if (!confirm(`${app.name}님의 신청을 삭제할까요?`)) return;
+      await remove(ref(db, `book-club/applications/${id}`));
+      toast("삭제됐어요");
+    });
+
+    grid.appendChild(card);
+  });
+}
+
+// ── PIN 관리 ───────────────────────────────────────────────
+function renderPins() {
+  const grid = document.getElementById("pin-grid");
+  grid.innerHTML = "";
+  MEMBERS.forEach(member => {
+    const card = document.createElement("div");
+    card.className = "pin-card";
+    card.innerHTML = `
+      <div class="pin-member-name">${member}</div>
+      <div class="pin-row">
+        <input type="password" inputmode="numeric" maxlength="4"
+               class="pin-input" placeholder="••••"
+               value="${currentPins[member] || ""}"
+               autocomplete="off">
+        <button class="pin-save-btn">저장</button>
+      </div>
+      <p class="pin-status"></p>`;
+
+    const input  = card.querySelector(".pin-input");
+    const saveBtn = card.querySelector(".pin-save-btn");
+    const statusEl = card.querySelector(".pin-status");
+
+    saveBtn.addEventListener("click", async () => {
+      const pin = input.value.trim();
+      if (!pin || pin.length !== 4 || !/^\d{4}$/.test(pin)) {
+        statusEl.textContent = "4자리 숫자를 입력하세요";
+        statusEl.style.color = "#C94B4B";
+        return;
+      }
+      try {
+        await set(ref(db, `book-club/pins/${member}`), pin);
+        currentPins[member] = pin;
+        statusEl.textContent = "저장됨";
+        statusEl.style.color = "var(--accent-green)";
+        setTimeout(() => { statusEl.textContent = ""; }, 2000);
+      } catch {
+        statusEl.textContent = "저장 실패";
+        statusEl.style.color = "#C94B4B";
+      }
+    });
+
+    grid.appendChild(card);
+  });
+}
+
+// ── Toast ──────────────────────────────────────────────────
+let toastTimer;
+function toast(msg) {
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove("show"), 2200);
+}
+
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+</script>
+<script>
+function toggleNav(btn){
+  const nav=document.getElementById('primary-nav');
+  const open=nav.classList.toggle('open');
+  btn.setAttribute('aria-expanded',open);
+}
+</script>
+</body>
+</html>

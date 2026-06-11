@@ -1,0 +1,1753 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>공간일기 — GONGGAN DIARY</title>
+<meta name="description" content="편식하지 않는 다섯 사람의 독서 모임, 공간일기.">
+<meta property="og:title" content="공간일기 — GONGGAN DIARY">
+<meta property="og:description" content="편식하지 않는 다섯 사람의 독서 모임">
+<meta property="og:type" content="website">
+
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%232D5A3D'/><path d='M10 11h12v10H10z' fill='%23FAFAF8'/><path d='M16 11v10' stroke='%232D5A3D' stroke-width='1'/></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500&family=Noto+Serif+KR:wght@400&display=swap" rel="stylesheet">
+
+<style>
+  /* ========== Design Tokens ========== */
+  :root {
+    /* Background */
+    --bg-base: #FAFAF8;
+    --bg-elev: #FFFFFF;
+    --bg-soft: #F3F1EA;
+    --bg-dark: #0A0A0A;
+    --bg-glass: rgba(250, 250, 248, 0.78);
+
+    /* Text */
+    --text-primary: #0A0A0A;
+    --text-secondary: #555;
+    --text-muted: #8A8A85;
+    --text-on-dark: #FAFAF8;
+
+    /* Accent */
+    --accent-green: #2D5A3D;
+    --accent-deep: #1A3525;
+    --accent-mint: #C8E0CF;
+    --accent-line: rgba(0, 0, 0, 0.08);
+
+    /* Gradients */
+    --gradient-bg: linear-gradient(135deg, #FAFAF8 0%, #F0EFE8 100%);
+    --gradient-green: linear-gradient(135deg, #2D5A3D 0%, #1A3525 100%);
+
+    /* Typography — families */
+    --font-serif: 'Noto Serif KR', Georgia, serif;
+    --font-sans: 'Noto Sans KR', sans-serif;
+    --font-mono: 'SF Mono', Menlo, Monaco, monospace;
+
+    /* Typography — sizes */
+    --text-hero:    clamp(40px, 5.5vw, 64px);
+    --text-display: 32px;
+    --text-body:    14px;
+    --text-small:   13px;
+    --text-label:   11px;
+
+    /* Typography — line-heights */
+    --lh-tight:  1.25;
+    --lh-normal: 1.65;
+    --lh-loose:  1.85;
+
+    /* Layout */
+    --max-w: 1320px;
+    --gutter: 40px;
+  }
+
+  /* ========== Reset ========== */
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    background: var(--bg-base);
+    color: var(--text-primary);
+    line-height: var(--lh-normal);
+    font-size: var(--text-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  img, video { display: block; max-width: 100%; }
+  button { font-family: inherit; cursor: pointer; }
+  a { color: inherit; text-decoration: none; }
+
+  :focus-visible {
+    outline: 2px solid var(--accent-green);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* ========== Utilities ========== */
+  .mono {
+    font-family: var(--font-mono);
+    font-feature-settings: 'tnum' 1;
+  }
+  .label-mono {
+    font-family: var(--font-sans);
+    font-size: var(--text-label);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .em-ko {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    color: var(--accent-green);
+  }
+  .em-en {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent-green);
+  }
+
+  /* ========== Header ========== */
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--bg-glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--accent-line);
+  }
+  .header-content {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: 14px var(--gutter);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+  }
+  .logo {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    text-decoration: none;
+  }
+  .logo-ko {
+    font-family: var(--font-sans);
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+  .logo-en {
+    font-family: var(--font-sans);
+    font-size: var(--text-label);
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+  }
+  .nav {
+    display: flex;
+    gap: 28px;
+    align-items: center;
+  }
+  .nav a {
+    font-family: var(--font-sans);
+    font-size: var(--text-label);
+    color: var(--text-secondary);
+    letter-spacing: 0.06em;
+    transition: color 0.18s;
+    padding: 6px 0;
+    position: relative;
+  }
+  .nav a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--text-primary);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.2s;
+  }
+  .nav a:hover,
+  .nav a.active {
+    color: var(--text-primary);
+  }
+  .nav a.active::after {
+    transform: scaleX(1);
+  }
+  .nav-mobile-toggle {
+    display: none;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    padding: 0;
+    color: var(--text-primary);
+  }
+  .nav-mobile-toggle:hover { background: var(--bg-soft); }
+  .nav-mobile-toggle svg { display: block; margin: 0 auto; }
+
+  /* Mobile nav */
+  @media (max-width: 720px) {
+    :root { --gutter: 20px; }
+    .header-content { padding: 12px 20px; }
+    .nav { display: none; }
+    .nav-mobile-toggle { display: inline-flex; align-items: center; justify-content: center; }
+    .nav.open {
+      display: flex;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      gap: 0;
+      background: var(--bg-elev);
+      border-bottom: 1px solid var(--accent-line);
+      padding: 8px 20px 16px;
+    }
+    .nav.open a {
+      padding: 14px 0;
+      border-bottom: 1px solid var(--accent-line);
+      font-size: var(--text-body);
+      letter-spacing: 0;
+    }
+    .nav.open a:last-child { border-bottom: none; }
+    .nav.open a::after { display: none; }
+  }
+
+  /* ========== Hero ========== */
+  .hero {
+    background: var(--gradient-bg);
+    padding: 0 0 96px;
+  }
+  .hero-inner {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: 0 var(--gutter);
+  }
+  .hero-text {
+    text-align: center;
+    max-width: 820px;
+    margin: 0 auto;
+    min-height: calc(100vh - 64px); /* 헤더 높이 제외 — 첫 화면 가득 */
+    padding: 80px 0 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+  }
+  .hero-scroll-hint {
+    position: absolute;
+    bottom: 36px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-muted);
+    font-family: var(--font-sans);
+    font-size: var(--text-label);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    animation: scrollHintFloat 2.4s ease-in-out infinite;
+  }
+  .hero-scroll-hint:hover { color: var(--text-primary); }
+  .hero-scroll-hint::after {
+    content: '';
+    width: 1px;
+    height: 36px;
+    background: linear-gradient(to bottom, var(--text-muted), transparent);
+  }
+  @keyframes scrollHintFloat {
+    0%, 100% { transform: translate(-50%, 0); }
+    50%      { transform: translate(-50%, 6px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-scroll-hint { animation: none; }
+  }
+  .hero-eyebrow {
+    margin: 0 0 28px;
+  }
+  .hero h1 {
+    font-family: var(--font-serif);
+    font-size: var(--text-hero);
+    line-height: var(--lh-tight);
+    letter-spacing: -0.025em;
+    font-weight: 400;
+    margin: 0 0 28px;
+    color: var(--text-primary);
+  }
+  .hero-subtitle {
+    font-size: var(--text-body);
+    line-height: var(--lh-loose);
+    color: var(--text-secondary);
+    margin: 0 0 36px;
+  }
+  .hero-cta {
+    display: inline-flex;
+    align-self: center;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 26px;
+    border: 1px solid rgba(0, 0, 0, 0.18);
+    border-radius: 999px;
+    font-size: var(--text-body);
+    font-weight: 500;
+    color: var(--text-primary);
+    background: transparent;
+    transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.2s;
+  }
+  .hero-cta:hover {
+    background: var(--text-primary);
+    color: var(--text-on-dark);
+    border-color: var(--text-primary);
+  }
+  .hero-cta .arrow {
+    transition: transform 0.2s;
+  }
+  .hero-cta:hover .arrow {
+    transform: translateX(3px);
+  }
+
+  .hero-video {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    border-radius: 18px;
+    overflow: hidden;
+    width: 100%;
+    margin: 0 auto;
+    box-shadow:
+      0 22px 60px rgba(0, 0, 0, 0.14),
+      0 4px 12px rgba(0, 0, 0, 0.06);
+    background: #111;
+    opacity: 0;
+    transition: opacity 0.9s ease;
+  }
+  .hero-video.in-view {
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-video { opacity: 1; transition: none; }
+  }
+  .hero-video video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .hero-video-badge {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    padding: 7px 12px 7px 10px;
+    background: rgba(10, 10, 10, 0.55);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 999px;
+    color: rgba(255, 255, 255, 0.92);
+    font-family: var(--font-sans);
+    font-size: var(--text-label);
+    letter-spacing: 0.06em;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .hero-video-badge .rec-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #E2533A;
+    box-shadow: 0 0 0 0 rgba(226, 83, 58, 0.7);
+    animation: recPulse 1.6s ease-out infinite;
+  }
+  @keyframes recPulse {
+    0%   { box-shadow: 0 0 0 0 rgba(226, 83, 58, 0.55); }
+    100% { box-shadow: 0 0 0 10px rgba(226, 83, 58, 0); }
+  }
+
+  @media (max-width: 720px) {
+    .hero { padding: 0 0 56px; }
+    .hero-inner { padding: 0 20px; }
+    .hero-text {
+      min-height: calc(100vh - 56px);
+      padding: 48px 0 96px;
+      margin-bottom: 0;
+    }
+    .hero-scroll-hint { bottom: 24px; }
+    .hero h1 { letter-spacing: -0.025em; }
+    .hero-video { border-radius: 14px; }
+    .nm-inner { padding: 0 20px; }
+    .join-inner { padding: 0 20px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-video-badge .rec-dot { animation: none; }
+  }
+
+  /* ========== Now Reading ========== */
+  .now-reading {
+    background: var(--bg-soft);
+  }
+  .now-reading-inner {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: 52px var(--gutter) 56px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 48px;
+  }
+  .now-reading-eyebrow {
+    color: var(--text-muted);
+    margin: 0 0 18px;
+  }
+  .now-reading-title {
+    font-family: var(--font-serif);
+    font-size: var(--text-display);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: var(--lh-tight);
+    color: var(--text-primary);
+    margin: 0 0 12px;
+  }
+  .now-reading-sub {
+    font-family: var(--font-sans);
+    font-size: var(--text-label);
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin: 0;
+    text-transform: uppercase;
+  }
+  .now-reading-aside {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 16px;
+    padding-bottom: 4px;
+  }
+  .now-reading-members {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-sans);
+    font-size: var(--text-label);
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+  }
+  .nr-dots { display: inline-flex; gap: 3px; }
+  .nr-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent-green);
+    opacity: 0.35;
+  }
+  .now-reading-cta {
+    font-family: var(--font-sans);
+    font-size: var(--text-label);
+    letter-spacing: 0.06em;
+    color: var(--text-primary);
+    border: 1px solid var(--accent-line);
+    border-radius: 999px;
+    padding: 8px 18px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.18s, border-color 0.18s, color 0.18s;
+  }
+  .now-reading-cta:hover {
+    background: var(--text-primary);
+    color: var(--text-on-dark);
+    border-color: var(--text-primary);
+  }
+  @media (max-width: 560px) {
+    .now-reading-inner {
+      grid-template-columns: 1fr;
+      gap: 28px;
+      padding: 40px 20px 44px;
+    }
+    .now-reading-aside {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+
+  /* Quotes Carousel — 3-Stage Swap (가운데 강조) */
+  .quotes-section {
+    position: relative;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .quotes-eyebrow {
+    text-align: center;
+    margin: 0 0 32px;
+  }
+  .quotes-stage {
+    position: relative;
+    height: 440px;
+    margin: 0 auto;
+  }
+  .quote-bubble {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 88%;
+    max-width: 560px;
+    background: var(--bg-elev);
+    border: 1px solid var(--accent-line);
+    border-radius: 18px;
+    padding: 22px 26px 20px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+    transition:
+      transform 0.55s cubic-bezier(0.5, 0, 0.2, 1),
+      opacity 0.45s ease,
+      border-color 0.45s ease,
+      box-shadow 0.45s ease,
+      background-color 0.45s ease;
+  }
+
+  .quote-bubble p {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: var(--text-body);
+    line-height: var(--lh-loose);
+    color: var(--text-primary);
+    margin: 0 0 12px;
+    letter-spacing: -0.02em;
+  }
+  .quote-bubble cite {
+    font-family: var(--font-sans);
+    font-style: normal;
+    font-size: var(--text-label);
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+
+  /* 위치별 변형 */
+  .quote-bubble.pos-top {
+    transform: translate(calc(-50% - 70px), calc(-50% - 150px)) scale(0.78);
+    opacity: 0.42;
+    z-index: 1;
+    filter: blur(0.3px);
+  }
+  .quote-bubble.pos-mid {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    z-index: 3;
+    border-color: rgba(45, 90, 61, 0.45);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.09), 0 2px 8px rgba(45, 90, 61, 0.08);
+  }
+  .quote-bubble.pos-bot {
+    transform: translate(calc(-50% + 70px), calc(-50% + 150px)) scale(0.78);
+    opacity: 0.42;
+    z-index: 1;
+    filter: blur(0.3px);
+  }
+
+  @media (max-width: 720px) {
+    .quotes-stage { height: 400px; }
+    .quote-bubble { width: 92%; padding: 18px 20px 16px; }
+    .quote-bubble.pos-top {
+      transform: translate(calc(-50% - 30px), calc(-50% - 130px)) scale(0.8);
+    }
+    .quote-bubble.pos-bot {
+      transform: translate(calc(-50% + 30px), calc(-50% + 130px)) scale(0.8);
+    }
+  }
+  .quote-bubble.pos-hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -50%) scale(0.6);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .quote-bubble { transition: none; filter: none; }
+  }
+
+  /* ========== Next Meeting ========== */
+  .next-meeting {
+    background: var(--bg-base);
+    padding: 110px 0 120px;
+    text-align: center;
+    border-top: 1px solid var(--accent-line);
+  }
+  .nm-inner {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: 0 var(--gutter);
+  }
+  .nm-eyebrow { margin: 0 0 22px; }
+  .nm-date {
+    font-family: var(--font-sans);
+    font-size: clamp(54px, 9vw, 112px);
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    margin: 0 0 18px;
+    color: var(--text-primary);
+  }
+  .nm-date.text-mode {
+    font-family: var(--font-serif);
+    font-size: var(--text-hero);
+    letter-spacing: -0.025em;
+  }
+  .nm-date .nm-month {
+    color: var(--text-secondary);
+    margin-right: 6px;
+  }
+  .nm-caption {
+    font-family: var(--font-serif);
+    font-size: var(--text-body);
+    color: var(--text-secondary);
+    margin: 0 0 36px;
+    letter-spacing: -0.02em;
+  }
+  .nm-members {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 18px 10px 14px;
+    background: var(--bg-elev);
+    border: 1px solid var(--accent-line);
+    border-radius: 999px;
+    margin: 0 auto 36px;
+  }
+  .nm-dots { display: inline-flex; gap: 5px; }
+  .nm-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent-green);
+    box-shadow: 0 0 0 2px rgba(45, 90, 61, 0.12);
+  }
+  .nm-dot.off { background: rgba(0, 0, 0, 0.16); box-shadow: none; }
+  .nm-members-label {
+    font-size: var(--text-small);
+    color: var(--text-primary);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .nm-members-label .count {
+    font-family: var(--font-sans);
+    color: var(--accent-green);
+    margin-right: 4px;
+  }
+  .nm-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .nm-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 28px;
+    background: var(--text-primary);
+    color: var(--text-on-dark);
+    border-radius: 999px;
+    font-size: var(--text-body);
+    font-weight: 500;
+    transition: background 0.22s, transform 0.22s;
+  }
+  .nm-cta:hover {
+    background: var(--accent-green);
+    transform: translateY(-2px);
+  }
+  .nm-cta.secondary {
+    background: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--accent-line);
+  }
+  .nm-cta.secondary:hover {
+    background: var(--text-primary);
+    color: var(--text-on-dark);
+    border-color: var(--text-primary);
+  }
+  @media (max-width: 560px) {
+    .next-meeting { padding: 72px 0 80px; }
+    .nm-members { padding: 10px 16px 10px 12px; gap: 10px; }
+  }
+
+  /* ========== Join Banner ========== */
+  .join-banner {
+    background: var(--gradient-green);
+    color: var(--text-on-dark);
+    padding: 120px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .join-banner::before,
+  .join-banner::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .join-banner::before {
+    top: -120px;
+    right: -120px;
+    width: 440px;
+    height: 440px;
+    background: radial-gradient(circle, rgba(200, 224, 207, 0.18) 0%, transparent 65%);
+  }
+  .join-banner::after {
+    bottom: -160px;
+    left: -160px;
+    width: 520px;
+    height: 520px;
+    background: radial-gradient(circle, rgba(200, 224, 207, 0.12) 0%, transparent 65%);
+  }
+  .join-inner {
+    position: relative;
+    z-index: 1;
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: 0 var(--gutter);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+  /* 좌: 말풍선 컨테이너 */
+  .join-quotes {
+    position: relative;
+    height: 440px;
+  }
+  .join-quotes .quote-bubble {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: none;
+  }
+  .join-quotes .quote-bubble p {
+    color: rgba(250, 250, 248, 0.65);
+  }
+  .join-quotes .quote-bubble cite {
+    color: rgba(250, 250, 248, 0.35);
+  }
+  .join-quotes .quote-bubble.pos-mid {
+    background: rgba(255, 255, 255, 0.11);
+    border-color: rgba(200, 224, 207, 0.5);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25), 0 2px 8px rgba(200, 224, 207, 0.12);
+  }
+  .join-quotes .quote-bubble.pos-mid p {
+    color: rgba(250, 250, 248, 0.96);
+  }
+  .join-quotes .quote-bubble.pos-mid cite {
+    color: rgba(200, 224, 207, 0.75);
+  }
+  /* 우: CTA 컬럼 */
+  .join-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .join-content .join-desc {
+    margin: 0 0 40px;
+    max-width: 100%;
+  }
+  .join-content .join-cta {
+    align-self: flex-start;
+  }
+  .join-eyebrow {
+    color: rgba(250, 250, 248, 0.55);
+    margin: 0 0 28px;
+  }
+  .join-title {
+    font-family: var(--font-serif);
+    font-size: var(--text-hero);
+    line-height: var(--lh-tight);
+    letter-spacing: -0.025em;
+    font-weight: 400;
+    margin: 0 0 24px;
+    color: var(--text-on-dark);
+  }
+  .join-title .em-ko {
+    color: var(--accent-mint);
+  }
+  .join-desc {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: var(--text-body);
+    line-height: var(--lh-loose);
+    color: rgba(250, 250, 248, 0.82);
+    max-width: 560px;
+    margin: 0 auto 40px;
+    letter-spacing: -0.02em;
+  }
+  .join-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 32px;
+    background: var(--text-on-dark);
+    color: var(--accent-deep);
+    border: none;
+    border-radius: 999px;
+    font-size: var(--text-small);
+    font-weight: 500;
+    transition: transform 0.22s, box-shadow 0.22s, background 0.22s;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  }
+  .join-cta:hover {
+    background: var(--accent-mint);
+    transform: translateY(-3px);
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.2);
+  }
+  .join-cta .arrow { transition: transform 0.22s; }
+  .join-cta:hover .arrow { transform: translateX(4px); }
+
+  /* Application form */
+  .join-apply-form {
+    display: none;
+    margin-top: 24px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 16px;
+    padding: 28px 24px;
+    width: 100%;
+    max-width: 400px;
+  }
+  .join-apply-form.open {
+    display: block;
+    animation: slideDown 0.28s ease;
+  }
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .apply-field { margin-bottom: 14px; }
+  .apply-field label {
+    display: block;
+    font-size: var(--text-label);
+    font-family: var(--font-sans);
+    letter-spacing: 0.06em;
+    color: rgba(250,250,248,0.55);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+  .apply-field input,
+  .apply-field select,
+  .apply-field textarea {
+    width: 100%;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: var(--text-body);
+    font-family: var(--font-sans);
+    color: var(--text-on-dark);
+    outline: none;
+    transition: border-color 0.18s;
+  }
+  .apply-field input::placeholder,
+  .apply-field textarea::placeholder { color: rgba(250,250,248,0.35); }
+  .apply-field input:focus,
+  .apply-field select:focus,
+  .apply-field textarea:focus { border-color: rgba(200,224,207,0.6); }
+  .apply-field select option { color: #0F0F0E; background: #fff; }
+  .apply-field textarea { resize: none; height: 72px; }
+  .apply-submit-btn {
+    width: 100%; height: 44px;
+    background: var(--text-on-dark); color: var(--accent-deep);
+    border-radius: 10px; font-size: var(--text-body); font-weight: 500;
+    border: none; cursor: pointer; font-family: var(--font-sans);
+    transition: background 0.18s, transform 0.18s; margin-top: 6px;
+  }
+  .apply-submit-btn:hover { background: var(--accent-mint); transform: translateY(-2px); }
+  .apply-submit-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+  .apply-success {
+    text-align: center; padding: 12px 0 4px;
+    font-size: var(--text-body); color: var(--accent-mint); line-height: var(--lh-normal);
+  }
+
+  @media (max-width: 900px) {
+    .join-inner {
+      grid-template-columns: 1fr;
+      gap: 68px;
+    }
+    .join-quotes { height: 360px; }
+    .join-content {
+      align-items: center;
+      text-align: center;
+    }
+    .join-content .join-cta { align-self: center; }
+  }
+  @media (max-width: 560px) {
+    .join-banner { padding: 52px 0 88px; }
+    .join-quotes { height: 300px; }
+    .join-quotes .quote-bubble.pos-top {
+      transform: translate(calc(-50% - 20px), calc(-50% - 95px)) scale(0.78);
+    }
+    .join-quotes .quote-bubble.pos-bot {
+      transform: translate(calc(-50% + 20px), calc(-50% + 95px)) scale(0.78);
+    }
+  }
+
+  /* ========== Main placeholder (임시) ========== */
+  .main-placeholder {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: 80px var(--gutter);
+    text-align: center;
+    color: var(--text-muted);
+  }
+  .main-placeholder h2 {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: var(--text-display);
+    color: var(--text-secondary);
+    margin: 0 0 8px;
+    letter-spacing: -0.02em;
+  }
+  .main-placeholder p { font-size: var(--text-small); margin: 4px 0; }
+
+  /* ========== About Animated ========== */
+  .about-section {
+    --about-left: max(var(--gutter), calc((100% - var(--max-w)) / 2 + var(--gutter)));
+    position: relative;
+    width: 100%;
+    min-height: 700px;
+    height: 100vh;
+    background: #1A3525;
+    overflow: hidden;
+    transition: background 1s ease;
+  }
+  .about-grain {
+    position: absolute;
+    inset: 0;
+    opacity: 0.045;
+    z-index: 10;
+    pointer-events: none;
+  }
+  .about-bg-kw {
+    position: absolute;
+    right: -2%;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: var(--font-serif);
+    font-size: clamp(120px, 22vw, 290px);
+    font-weight: 400;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255,255,255,0.18);
+    z-index: 1;
+    pointer-events: none;
+    user-select: none;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+  .about-eyebrow {
+    position: absolute;
+    top: clamp(20px, 4vw, 48px);
+    left: var(--about-left);
+    font-family: var(--font-sans);
+    font-size: var(--text-label);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(200, 224, 207, 0.55);
+    z-index: 4;
+    margin: 0;
+  }
+  .keywords-wrap {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(8px, 2.2vw, 28px);
+    z-index: 3;
+    transition: left 0.85s cubic-bezier(0.76, 0, 0.24, 1),
+                transform 0.85s cubic-bezier(0.76, 0, 0.24, 1);
+  }
+  .keywords-wrap.moved {
+    left: var(--about-left);
+    transform: translate(0, -50%);
+  }
+  .kw-item {
+    overflow: hidden;
+    height: var(--text-hero);
+  }
+  .kw-text {
+    display: block;
+    font-family: var(--font-serif);
+    font-size: var(--text-hero);
+    font-weight: 400;
+    letter-spacing: -0.025em;
+    line-height: 1;
+    white-space: nowrap;
+    transform: translateY(110%);
+    transition: transform 0.7s cubic-bezier(0.76, 0, 0.24, 1);
+  }
+  .kw-text.visible { transform: translateY(0); }
+  .kw-1 { color: #F5F0E8; }
+  .kw-2 { color: #C8E0CF; }
+  .kw-3 { color: #F5F0E8; }
+  .about-vline {
+    position: absolute;
+    left: calc(var(--about-left) + clamp(140px, 22vw, 300px) + 20px);
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0.5px;
+    background: rgba(200,224,207,0.3);
+    height: 0;
+    transition: height 0.5s ease;
+    z-index: 2;
+  }
+  .about-vline.visible { height: clamp(120px, 20vw, 240px); }
+  .desc-panel {
+    position: absolute;
+    left: calc(var(--about-left) + clamp(140px, 22vw, 300px) + 48px);
+    top: 50%;
+    transform: translateY(-50%) translateX(20px);
+    opacity: 0;
+    transition: opacity 0.6s ease, transform 0.6s ease;
+    z-index: 3;
+  }
+  .desc-panel.visible {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+  .desc-item + .desc-item { margin-top: clamp(20px, 3.5vw, 44px); }
+  .desc-kw-label {
+    font-family: var(--font-sans);
+    font-size: var(--text-label);
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin: 0 0 8px;
+  }
+  .desc-kw-label { color: rgba(250, 250, 248, 0.45); }
+  .desc-body {
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    color: rgba(250, 250, 248, 0.72);
+    line-height: var(--lh-loose);
+    max-width: 360px;
+    margin: 0;
+  }
+  .about-photos {
+    position: absolute;
+    left: calc(var(--about-left) + clamp(140px, 22vw, 300px) + 48px + 360px + 40px);
+    right: var(--about-left);
+    top: 50%;
+    transform: translateY(-50%) translateX(30px);
+    height: clamp(240px, 28vw, 370px);
+    opacity: 0;
+    transition: opacity 0.8s ease, transform 0.8s ease;
+    z-index: 3;
+  }
+  .about-photos.visible {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+  .about-photo {
+    position: absolute;
+    background: rgba(200, 224, 207, 0.1);
+    border: 1px solid rgba(200, 224, 207, 0.18);
+    border-radius: clamp(6px, 0.7vw, 10px);
+  }
+  .about-photo-back {
+    width: 56%;
+    height: 70%;
+    right: 0;
+    top: 0;
+  }
+  .about-photo-front {
+    width: 46%;
+    height: 57%;
+    left: 0;
+    bottom: 0;
+    z-index: 1;
+  }
+  @media (max-width: 960px) { .about-photos { display: none; } }
+
+  @media (max-width: 720px) {
+    .about-section {
+      height: auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: clamp(80px, 15vw, 120px) 24px;
+    }
+    .about-eyebrow {
+      position: relative;
+      top: auto;
+      left: auto;
+      text-align: center;
+      margin-bottom: 36px;
+    }
+    .keywords-wrap,
+    .keywords-wrap.moved {
+      position: relative;
+      top: auto; left: auto;
+      transform: none;
+      align-items: center;
+    }
+    .kw-item { text-align: center; }
+    .about-vline {
+      position: relative;
+      left: auto; top: auto;
+      transform: none;
+      width: 1px;
+      height: 0;
+      margin: 28px auto;
+    }
+    .about-vline.visible { height: 44px; }
+    .desc-panel {
+      position: relative;
+      left: auto; top: auto;
+      transform: translateX(16px);
+      text-align: center;
+      width: 100%;
+      max-width: 320px;
+    }
+    .desc-panel.visible {
+      opacity: 1;
+      transform: none;
+    }
+    .desc-body { max-width: 100%; }
+    .about-bg-kw { font-size: clamp(64px, 20vw, 90px); }
+  }
+
+  /* ========== Footer ========== */
+  .footer { border-top: 1px solid var(--accent-line); padding: 28px 0; background: var(--bg-base); }
+  .footer-content {
+    max-width: var(--max-w); margin: 0 auto; padding: 0 var(--gutter);
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 16px; font-size: var(--text-label); color: var(--text-muted); flex-wrap: wrap;
+  }
+  .footer-left { display: flex; align-items: center; gap: 8px; }
+  .footer-left strong { font-weight: 500; color: var(--text-secondary); }
+  .footer-right { display: flex; gap: 16px; align-items: center; }
+  .footer-right a { color: var(--text-muted); transition: color 0.2s; }
+  .footer-right a:hover { color: var(--text-primary); }
+  .footer-sep { opacity: 0.4; }
+  @media (max-width: 720px) { .footer { padding: 20px 0; } }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-content">
+    <a href="#top" class="logo">
+      <span class="logo-ko">공간일기</span>
+    </a>
+    <div style="display:flex;align-items:center;gap:20px;">
+      <nav class="nav" id="primary-nav">
+        <a class='active' href='index.html'>HOME</a>
+        <a href='about.html'>ABOUT</a>
+        <a href='books.html'>BOOKS</a>
+        <a href='schedule.html'>SCHEDULE</a>
+        <a href='admin.html' id='nav-admin' style='display:none'>ADMIN</a>
+      </nav>
+      <div id="auth-badge" style="display:flex;align-items:center;flex-shrink:1;min-width:0;overflow:hidden;"></div>
+      <button class="nav-mobile-toggle" aria-label="메뉴 열기" aria-expanded="false" onclick="toggleNav(this)">
+        <svg width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <line x1="1" y1="1" x2="19" y2="1"/>
+          <line x1="1" y1="7" x2="19" y2="7"/>
+          <line x1="1" y1="13" x2="19" y2="13"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ========== Hero ========== -->
+  <section class="hero" id="home">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <p class="label-mono hero-eyebrow">READING CLUB · SINCE 2025</p>
+        <h1>
+          편식없는<br>
+          독서모임<br>
+          <span class="em-ko">공간일기</span>
+        </h1>
+        <p class="hero-subtitle">
+          취향이 달라도 괜찮아요<br>
+          같이 읽고 더 깊어지는 독서모임
+        </p>
+        <a class='hero-cta' href='schedule.html'>
+          다음 모임 보기 <span class="arrow" aria-hidden="true">→</span>
+        </a>
+        <a href="#hero-video" class="hero-scroll-hint" aria-label="아래로 스크롤하여 영상 보기">
+          Scroll
+        </a>
+      </div>
+
+      <div class="hero-video" id="hero-video">
+        <video autoplay muted loop playsinline preload="metadata"
+               aria-label="공간일기 모임 영상">
+          <source src="video/gonggan.mp4" type="video/mp4">
+        </video>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== About (Animated Keywords) ========== -->
+  <section class="about-section" id="about-anim">
+    <svg class="about-grain" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" aria-hidden="true">
+      <filter id="about-noise">
+        <feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="4" stitchTiles="stitch"/>
+        <feColorMatrix type="saturate" values="0"/>
+      </filter>
+      <rect width="100%" height="100%" filter="url(#about-noise)"/>
+    </svg>
+
+    <div class="about-bg-kw" aria-hidden="true"></div>
+
+    <p class="about-eyebrow">About · Since 2025</p>
+
+    <div class="keywords-wrap" id="keywords-wrap">
+      <div class="kw-item">
+        <span class="kw-text kw-1">다양하게</span>
+      </div>
+      <div class="kw-item">
+        <span class="kw-text kw-2">유쾌하게</span>
+      </div>
+      <div class="kw-item">
+        <span class="kw-text kw-3">자유롭게</span>
+      </div>
+    </div>
+
+    <div class="about-vline" id="about-vline"></div>
+
+    <div class="desc-panel" id="desc-panel">
+      <div class="desc-item">
+        <p class="desc-kw-label">다양하게</p>
+        <p class="desc-body">소설, 시집, 인문, 과학.<br>장르의 벽 없이 매번 다른 세계를 탐험합니다.</p>
+      </div>
+      <div class="desc-item">
+        <p class="desc-kw-label">유쾌하게</p>
+        <p class="desc-body">책 이야기 반, 일상 이야기 반.<br>편한 자리에서 솔직하게 나눕니다.</p>
+      </div>
+      <div class="desc-item">
+        <p class="desc-kw-label">자유롭게</p>
+        <p class="desc-body">정해진 장소도, 고정된 역할도 없습니다.<br>느슨하게 모였다 각자의 일상으로.</p>
+      </div>
+    </div>
+
+    <div class="about-photos" id="about-photos" aria-hidden="true">
+      <div class="about-photo about-photo-back"></div>
+      <div class="about-photo about-photo-front"></div>
+    </div>
+  </section>
+
+  <!-- ========== Now Reading ========== -->
+  <section class="now-reading" aria-label="이달의 책">
+    <div class="now-reading-inner">
+      <div class="now-reading-main">
+        <p class="label-mono now-reading-eyebrow" id="nr-eyebrow">THIS MONTH</p>
+        <h2 class="now-reading-title" id="nr-title">—</h2>
+        <p class="now-reading-sub" id="nr-author"></p>
+      </div>
+      <div class="now-reading-aside">
+        <div class="now-reading-members">
+          <span class="nr-dots">
+            <span class="nr-dot"></span>
+            <span class="nr-dot"></span>
+            <span class="nr-dot"></span>
+            <span class="nr-dot"></span>
+            <span class="nr-dot"></span>
+          </span>
+          5명 함께 읽는 중
+        </div>
+        <a href="books.html" class="now-reading-cta">Books 더 보기 →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 6. Next Meeting ─────────────────────────────────────────── -->
+  <section class="next-meeting" id="meeting">
+    <div class="nm-inner">
+      <p class="label-mono nm-eyebrow">NEXT MEETING</p>
+      <div class="nm-date">2026.05.14</div>
+      <p class="nm-caption">서로 일정 맞춰 편하게</p>
+
+      <div class="nm-members" id="nm-members-wrap">
+        <span class="nm-dot"></span>
+        <span class="nm-dot"></span>
+        <span class="nm-dot"></span>
+        <span class="nm-dot"></span>
+        <span class="nm-dot"></span>
+        <span class="nm-members-label"><span class="count">5</span>명 참석 예정</span>
+      </div>
+
+      <div class="nm-actions">
+        <a class='nm-cta' href='schedule.html'>내 일정 등록하기</a>
+        <a class='nm-cta secondary' href='schedule.html'>전체 일정 보기</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 7. Join Banner ──────────────────────────────────────────── -->
+  <section class="join-banner" id="join">
+    <div class="join-inner">
+
+      <!-- 좌: 말풍선 배경 텍스처 -->
+      <div class="join-quotes" aria-hidden="true">
+        <div class="quotes-stage" aria-label="멤버 인용 자동 전환">
+          <article class="quote-bubble" data-quote="0">
+            <p>한 번 모이고 끝날 줄 알았는데 벌써 1년째. 책 얘기하다가 삼겹살 얘기하고, 그게 좋더라고요.</p>
+            <cite>— 진협</cite>
+          </article>
+          <article class="quote-bubble" data-quote="1">
+            <p>내가 읽은 책 말하는 게 부담스러웠는데 여기선 아무 말이나 해도 진지하게 들어줘요.</p>
+            <cite>— 수화</cite>
+          </article>
+          <article class="quote-bubble" data-quote="2">
+            <p>카페든 술집이든 상관없이 만나는 게 좋아요. 매번 똑같은 건 지루하니까.</p>
+            <cite>— 혜진</cite>
+          </article>
+          <article class="quote-bubble" data-quote="3">
+            <p>책 한 권 다 못 읽어도 괜찮아요. 읽어온 만큼만 얘기해도 충분하거든요.</p>
+            <cite>— 애리</cite>
+          </article>
+          <article class="quote-bubble" data-quote="4">
+            <p>각자 다른 부분에서 감동받는 게 신기해요. 같은 책인데 이렇게 다를 수가 있나 싶고.</p>
+            <cite>— 유영</cite>
+          </article>
+        </div>
+      </div>
+
+      <!-- 우: Join CTA -->
+      <div class="join-content">
+        <p class="label-mono join-eyebrow">VOICES · 멤버들의 한마디</p>
+        <h2 class="join-title">
+          우리와 함께<br>
+          <span class="em-ko">읽어요</span>
+        </h2>
+        <p class="join-desc">
+          공간일기는 책을 좋아하는 사람들이 모여<br>
+          한 달에 한 번, 편하게 책 이야기를 나눕니다.<br>
+          지금 멤버를 모집하고 있어요.
+        </p>
+        <button class="join-cta" id="apply-toggle-btn">멤버 신청하기 <span class="arrow">→</span></button>
+
+        <!-- 신청 폼 -->
+        <div class="join-apply-form" id="join-apply-form">
+          <div class="apply-field">
+            <label>이름</label>
+            <input type="text" id="apply-name" placeholder="홍길동">
+          </div>
+          <div class="apply-field">
+            <label>연락처 (카카오 / 전화)</label>
+            <input type="text" id="apply-contact" placeholder="카카오 ID 또는 010-xxxx-xxxx">
+          </div>
+          <div class="apply-field">
+            <label>좋아하는 책 장르</label>
+            <select id="apply-genre">
+              <option value="">선택해주세요</option>
+              <option>소설</option>
+              <option>인문/사회</option>
+              <option>에세이</option>
+              <option>과학/기술</option>
+              <option>경제/경영</option>
+              <option>자기계발</option>
+              <option>시/문학</option>
+              <option>기타</option>
+            </select>
+          </div>
+          <div class="apply-field">
+            <label>자기소개 한 줄</label>
+            <textarea id="apply-intro" placeholder="책을 좋아하는 이유 또는 하고 싶은 말"></textarea>
+          </div>
+          <button class="apply-submit-btn" id="apply-submit-btn">신청하기</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="footer-content">
+    <div class="footer-left">
+      <strong>공간일기</strong>
+      <span class="label-mono">· EST. 2025</span>
+    </div>
+    <div class="footer-right">
+      <a href="#" aria-label="Instagram">Instagram</a>
+      <span class="footer-sep">·</span>
+      <a href="mailto:hello@gonggan.kr" aria-label="Email">Email</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function toggleNav(btn) {
+    const nav = document.getElementById('primary-nav');
+    const open = nav.classList.toggle('open');
+    btn.setAttribute('aria-expanded', String(open));
+  }
+
+  // Hero video fade-in on scroll
+  (function () {
+    const target = document.getElementById('hero-video');
+    if (!target) return;
+    if (!('IntersectionObserver' in window)) {
+      target.classList.add('in-view');
+      return;
+    }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          target.classList.add('in-view');
+          io.disconnect();
+        }
+      });
+    }, { threshold: 0.15 });
+    io.observe(target);
+  })();
+
+  // Hero video scroll-expand effect
+  (function () {
+    const video = document.getElementById('hero-video');
+    if (!video) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    function update() {
+      const rect     = video.getBoundingClientRect();
+      const vh       = window.innerHeight;
+      const vw       = window.innerWidth;
+      const naturalW = video.offsetWidth;
+      const naturalH = video.offsetHeight;
+      if (naturalW === 0) return;
+
+      const enterStart = vh;
+      const peak       = vh * 0.15;
+      const exitStart  = -naturalH * 0.4;
+      const exitEnd    = -naturalH * 0.6;
+
+      let progress;
+      if (rect.top >= peak) {
+        progress = (enterStart - rect.top) / (enterStart - peak);
+      } else if (rect.top >= exitStart) {
+        progress = 1;
+      } else {
+        progress = (rect.top - exitEnd) / (exitStart - exitEnd);
+      }
+      progress = Math.max(0, Math.min(1, progress));
+
+      const maxScale = vw / naturalW;
+      const scale    = 1 + (maxScale - 1) * progress;
+      const radius   = Math.max(0, 18 * (1 - progress * 1.5));
+
+      video.style.transform    = `scale(${scale})`;
+      video.style.borderRadius = `${radius}px`;
+    }
+
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update, { passive: true });
+    update();
+  })();
+
+  // About section keyword animation
+  (function () {
+    const section = document.querySelector('.about-section');
+    if (!section) return;
+
+    const kwWrap  = document.getElementById('keywords-wrap');
+    const kwTexts = section.querySelectorAll('.kw-text');
+    const bgKw    = section.querySelector('.about-bg-kw');
+    const vline   = document.getElementById('about-vline');
+    const descPanel = document.getElementById('desc-panel');
+    const photos  = document.getElementById('about-photos');
+
+    const kws      = ['다양하게', '유쾌하게', '자유롭게'];
+    const bgColors = ['#1c3b28', '#163521', '#1b3a27'];
+    const delays   = [300, 800, 1300];
+    let triggered  = false;
+
+    function showBgKw(text) {
+      bgKw.style.opacity = '0';
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        bgKw.textContent = text;
+        bgKw.style.opacity = '1';
+      }));
+    }
+
+    function runAnimation() {
+      if (triggered) return;
+      triggered = true;
+
+      delays.forEach((delay, i) => {
+        setTimeout(() => {
+          section.style.background = bgColors[i];
+          kwTexts[i].classList.add('visible');
+          showBgKw(kws[i]);
+        }, delay);
+      });
+
+      setTimeout(() => {
+        bgKw.style.opacity = '0';
+        section.style.background = '#1A3525';
+        kwWrap.classList.add('moved');
+      }, 2000);
+
+      setTimeout(() => { vline.classList.add('visible'); }, 2400);
+      setTimeout(() => { descPanel.classList.add('visible'); }, 2700);
+      setTimeout(() => { if (photos) photos.classList.add('visible'); }, 2900);
+    }
+
+    if (!('IntersectionObserver' in window)) { runAnimation(); return; }
+
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { runAnimation(); io.disconnect(); } });
+    }, { threshold: 0.3 });
+    io.observe(section);
+  })();
+
+  // Quotes Carousel — 5개 중 3개(top/mid/bot) 순환
+  (function () {
+    const stage = document.querySelector('.quotes-stage');
+    if (!stage) return;
+    const bubbles = Array.from(stage.querySelectorAll('.quote-bubble'));
+    if (bubbles.length < 3) return;
+    const VISIBLE = ['pos-top', 'pos-mid', 'pos-bot'];
+    const ALL_POS = [...VISIBLE, 'pos-hidden'];
+    const prefersReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let state = 0;
+
+    function applyState(s) {
+      const n = bubbles.length;
+      bubbles.forEach(b => ALL_POS.forEach(p => b.classList.remove(p)));
+      for (let j = 0; j < 3; j++) {
+        bubbles[(s + j) % n].classList.add(VISIBLE[j]);
+      }
+      for (let j = 3; j < n; j++) {
+        bubbles[(s + j) % n].classList.add('pos-hidden');
+      }
+    }
+
+    applyState(state);
+    if (prefersReduce) return;
+
+    let timer = null;
+    function start() {
+      timer = setInterval(() => {
+        state = (state + 1) % bubbles.length;
+        applyState(state);
+      }, 2000);
+    }
+    function stop() { if (timer) { clearInterval(timer); timer = null; } }
+    start();
+    stage.addEventListener('mouseenter', stop);
+    stage.addEventListener('mouseleave', start);
+  })();
+
+</script>
+
+<script type="module">
+import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+import { getDatabase, ref, push, onValue, get } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCjtgMykJPKnsAORcfgQ9FxbPnzNEj_fEc",
+  authDomain: "book-56493.firebaseapp.com",
+  databaseURL: "https://book-56493-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "book-56493",
+  storageBucket: "book-56493.firebasestorage.app",
+  messagingSenderId: "900836361804",
+  appId: "1:900836361804:web:17d21b68011427a7e796e9"
+};
+
+const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const appsRef = ref(db, "book-club/applications");
+const pinsRef = ref(db, "book-club/pins");
+
+// ── 이달의 책 실시간 표시 ──────────────────────────────────
+const MONTHS_KO = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+onValue(ref(db, "book-club/current-book"), (snap) => {
+  const titleEl  = document.getElementById("nr-title");
+  const authorEl = document.getElementById("nr-author");
+  const eyebrow  = document.getElementById("nr-eyebrow");
+  if (!snap.exists() || !snap.val()) {
+    if (titleEl)  titleEl.textContent  = "—";
+    if (authorEl) authorEl.textContent = "";
+    return;
+  }
+  const { title, author } = snap.val();
+  const now = new Date();
+  if (eyebrow) eyebrow.textContent = `THIS MONTH · ${MONTHS_KO[now.getMonth()]} ${now.getFullYear()}`;
+  if (titleEl)  titleEl.textContent  = title  || "—";
+  if (authorEl) authorEl.textContent = author || "";
+});
+
+// ── 다음 모임 실시간 표시 ──────────────────────────────────
+const NM_MEMBERS = ["진협","수화","애리","유영","혜진"];
+let _confirmedDate = null;
+let _avail = {};
+
+function renderNmMembers() {
+  const wrap = document.getElementById("nm-members-wrap");
+  if (!wrap) return;
+  if (!_confirmedDate) {
+    wrap.innerHTML = `<span class="nm-members-label" style="color:var(--text-muted,#999)">일정 조율 중</span>`;
+    return;
+  }
+  const attending = NM_MEMBERS.filter(m => (_avail[m] || []).includes(_confirmedDate));
+  const dots = attending.map(m => `<span class="nm-dot" aria-label="${m}"></span>`).join("");
+  wrap.innerHTML = dots + `<span class="nm-members-label"><span class="count">${attending.length}</span>명 참석 예정</span>`;
+}
+
+onValue(ref(db, "book-club/availability"), (snap) => {
+  _avail = snap.val() || {};
+  renderNmMembers();
+});
+
+onValue(ref(db, "book-club/confirmed-meeting"), (snap) => {
+  const dateEl    = document.querySelector(".nm-date");
+  const captionEl = document.querySelector(".nm-caption");
+
+  if (!snap.exists() || !snap.val()) {
+    _confirmedDate = null;
+    if (dateEl) { dateEl.textContent = "Next chapter"; dateEl.classList.add("text-mode"); }
+    if (captionEl) captionEl.textContent = "다음 이야기를 준비 중이에요";
+    renderNmMembers();
+    return;
+  }
+
+  const { date, time, place } = snap.val();
+  const d = new Date(date);
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  d.setHours(0, 0, 0, 0);
+
+  if (d < today) {
+    _confirmedDate = null;
+    if (dateEl) { dateEl.textContent = "Next chapter"; dateEl.classList.add("text-mode"); }
+    if (captionEl) captionEl.textContent = "다음 이야기를 준비 중이에요";
+    renderNmMembers();
+    return;
+  }
+
+  _confirmedDate = date;
+  const dateStr = `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
+  if (dateEl) { dateEl.textContent = dateStr; dateEl.classList.remove("text-mode"); }
+  if (captionEl) captionEl.textContent = `${time} · ${place}`;
+  renderNmMembers();
+});
+
+// 인라인 Auth
+const SK = "gonggan-session";
+const ADMIN_MBR = "혜진";
+const DEF_PINS = {"진협":"1234","수화":"2345","애리":"3456","유영":"4567","혜진":"0000"};
+const AUTH_MEMBERS = ["진협","수화","애리","유영","혜진"];
+function getSession(){ try{const r=sessionStorage.getItem(SK);return r?JSON.parse(r):null;}catch{return null;} }
+function isAdmin(){ const s=getSession();return !!(s&&s.role==="admin"); }
+
+async function loginUser(pin){
+  let pins=DEF_PINS;
+  try{const snap=await get(pinsRef);if(snap.exists())pins=snap.val();}catch{}
+  const member=AUTH_MEMBERS.find(m=>String(pins[m])===String(pin));
+  if(!member)return false;
+  sessionStorage.setItem(SK,JSON.stringify({member,role:member===ADMIN_MBR?"admin":"member"}));
+  return true;
+}
+
+let _modal=null;
+function showLoginModal(cb){
+  if(_modal)return;
+  const o=document.createElement("div");
+  o.style.cssText="position:fixed;inset:0;z-index:9999;background:rgba(15,15,14,.55);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;";
+  o.innerHTML=`<div style="background:#fff;border-radius:20px;padding:40px 36px;width:min(420px,calc(100vw - 32px));position:relative;box-shadow:0 24px 64px rgba(0,0,0,.18)">
+    <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:24px"><span style="font-family:'Noto Serif KR',Georgia,serif;font-size:18px;font-weight:500">공간일기</span><span style="font-family:'Noto Sans KR',sans-serif;font-size:11px;letter-spacing:.06em;color:#999">GONGGAN DIARY</span></div>
+    <h2 style="font-size:22px;font-weight:400;letter-spacing:-.02em;margin-bottom:24px;font-family:'Noto Serif KR',Georgia,serif">로그인</h2>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px"><span style="font-family:'Noto Sans KR',sans-serif;font-size:11px;letter-spacing:.06em;color:#999;text-transform:uppercase;white-space:nowrap">PIN</span><input id="_ml_pin" type="password" inputmode="numeric" maxlength="4" placeholder="••••" style="flex:1;min-width:0;box-sizing:border-box;-webkit-appearance:none;height:46px;border:1px solid rgba(45,90,61,.2);border-radius:10px;padding:0 16px;font-size:20px;letter-spacing:.3em;font-family:'Noto Sans KR',sans-serif;outline:none;background:#FAFAF8"></div>
+    <p id="_ml_err" style="min-height:18px;font-size:12px;color:#C94B4B;margin-bottom:16px"></p>
+    <button id="_ml_ok" style="width:100%;height:48px;background:#2D5A3D;color:#FAFAF8;border-radius:12px;font-size:15px;font-weight:500;border:none;cursor:pointer;font-family:inherit">로그인</button>
+    <button id="_ml_x" style="position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;font-size:18px;color:#999;background:none;border:none;cursor:pointer">×</button>
+  </div>`;
+  document.body.appendChild(o);_modal=o;
+  function closeMod(){if(_modal){_modal.remove();_modal=null;}}
+  async function doLogin(){
+    const pin=document.getElementById("_ml_pin").value.trim();
+    const err=document.getElementById("_ml_err");
+    if(!pin){err.textContent="PIN을 입력해주세요";return;}
+    const sb=document.getElementById("_ml_ok");
+    sb.textContent="확인 중...";sb.disabled=true;
+    if(await loginUser(pin)){closeMod();if(cb)cb(getSession());else location.reload();}
+    else{err.textContent="PIN이 올바르지 않아요";document.getElementById("_ml_pin").value="";sb.textContent="로그인";sb.disabled=false;}
+  }
+  document.getElementById("_ml_ok").addEventListener("click",doLogin);
+  document.getElementById("_ml_pin").addEventListener("keydown",e=>{if(e.key==="Enter")doLogin();});
+  document.getElementById("_ml_x").addEventListener("click",closeMod);
+  o.addEventListener("click",e=>{if(e.target===o)closeMod();});
+}
+
+const adminLink = document.getElementById("nav-admin");
+if (adminLink) adminLink.style.display = isAdmin() ? "" : "none";
+
+(function renderAuthBadge(){
+  const s = getSession();
+  const b = document.getElementById("auth-badge");
+  if (!b) return;
+  if (s) {
+    b.innerHTML = `<span style="font-size:13px;font-weight:500;color:#2D5A3D;flex-shrink:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${s.member}${s.role==="admin"?" · 관리자":""}</span><button onclick="sessionStorage.removeItem('${SK}');location.reload();" style="margin-left:8px;font-size:12px;color:#999993;border:1px solid rgba(45,90,61,.12);border-radius:999px;padding:6px 12px;background:none;cursor:pointer;font-family:inherit">로그아웃</button>`;
+  } else {
+    b.innerHTML = `<a id="_hdr_login" href="#" style="font-size:13px;font-weight:500;color:#2D5A3D;border:1px solid rgba(45,90,61,.3);border-radius:999px;padding:6px 16px;text-decoration:none">로그인</a>`;
+    document.getElementById("_hdr_login")?.addEventListener("click",(e)=>{e.preventDefault();showLoginModal();});
+  }
+})();
+
+// 신청 폼 토글
+const toggleBtn = document.getElementById("apply-toggle-btn");
+const applyForm = document.getElementById("join-apply-form");
+if (toggleBtn && applyForm) {
+  toggleBtn.addEventListener("click", () => {
+    applyForm.classList.toggle("open");
+    if (applyForm.classList.contains("open")) {
+      toggleBtn.textContent = "닫기 ×";
+      document.getElementById("apply-name").focus();
+    } else {
+      toggleBtn.innerHTML = "멤버 신청하기 <span class='arrow'>→</span>";
+    }
+  });
+}
+
+// 신청 제출
+const submitBtn = document.getElementById("apply-submit-btn");
+if (submitBtn) {
+  submitBtn.addEventListener("click", async () => {
+    const name    = document.getElementById("apply-name").value.trim();
+    const contact = document.getElementById("apply-contact").value.trim();
+    const genre   = document.getElementById("apply-genre").value;
+    const intro   = document.getElementById("apply-intro").value.trim();
+
+    if (!name || !contact || !genre) {
+      alert("이름, 연락처, 장르는 필수 항목이에요.");
+      return;
+    }
+
+    submitBtn.textContent = "제출 중...";
+    submitBtn.disabled = true;
+
+    try {
+      await push(appsRef, {
+        name, contact, genre, intro,
+        at: new Date().toISOString()
+      });
+      applyForm.innerHTML = `<p class="apply-success">✦ 신청이 접수됐어요.<br>관리자 확인 후 연락드릴게요.</p>`;
+    } catch {
+      submitBtn.textContent = "신청하기";
+      submitBtn.disabled = false;
+      alert("제출 중 오류가 발생했어요. 다시 시도해주세요.");
+    }
+  });
+}
+</script>
+
+</body>
+</html>
